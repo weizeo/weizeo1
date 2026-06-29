@@ -10,104 +10,193 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#0e0f11;--card:#181a1f;--card2:#20232a;--border:#2a2d35;
-  --gold:#c9a84c;--gold2:#f0c866;--green:#2ecc71;--red:#e74c3c;
-  --blue:#4a9eff;--purple:#9b59b6;--text:#f0f0f0;--muted:#888;--muted2:#555;
+  --bg1:#0a0e1a;--bg2:#0e1420;--bg3:#111828;
+  --card:#161d2e;--card2:#1c2438;--border:#2a3550;
+  --gold:#e8b84b;--gold2:#ffd166;--green:#06d6a0;--red:#ef476f;
+  --blue:#4cc9f0;--purple:#a78bfa;--pink:#f472b6;--orange:#fb923c;
+  --cyan:#22d3ee;--text:#e8edf8;--muted:#6b7a9e;--muted2:#3d4a6a;
   --radius:14px;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;min-height:100vh;padding-bottom:calc(84px + var(--safe-bot))}
-.header{padding:calc(var(--safe-top) + 16px) 20px 14px;display:flex;justify-content:space-between;align-items:flex-end;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
-.header-title{font-size:22px;font-weight:700;letter-spacing:-.5px}
-.header-date{font-size:12px;color:var(--muted);margin-top:2px}
-.sync-btn{background:var(--card2);border:1px solid var(--border);color:var(--gold);font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px}
+body{
+  background:var(--bg1);
+  background-image:
+    radial-gradient(ellipse at 20% 0%,rgba(99,102,241,.18) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 10%,rgba(6,214,160,.12) 0%,transparent 45%),
+    radial-gradient(ellipse at 50% 80%,rgba(168,85,247,.10) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 60%,rgba(76,201,240,.08) 0%,transparent 40%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;
+  min-height:100vh;
+  padding-bottom:calc(84px + var(--safe-bot));
+}
+.header{
+  padding:calc(var(--safe-top)+16px) 18px 14px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  position:sticky;top:0;
+  background:rgba(10,14,26,.85);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  z-index:10;border-bottom:1px solid rgba(99,102,241,.2);
+}
+.header-title{font-size:19px;font-weight:700;letter-spacing:-.3px;
+  background:linear-gradient(90deg,var(--gold2),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-date{font-size:11px;color:var(--muted);margin-top:2px}
+.sync-btn{
+  background:rgba(76,201,240,.12);border:1px solid rgba(76,201,240,.35);
+  color:var(--cyan);font-size:12px;padding:7px 12px;border-radius:20px;
+  cursor:pointer;display:flex;align-items:center;gap:5px}
 .sync-btn:active{opacity:.7}
-.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(14,15,17,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 calc(8px + var(--safe-bot));z-index:20}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;opacity:.45;transition:opacity .15s}
-.tab.active{opacity:1;color:var(--gold)}
-.tab-icon{font-size:20px}
-.tab-label{font-size:10px;font-weight:500}
+
+.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;
+  background:rgba(10,14,26,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(99,102,241,.2);
+  padding:8px 0 calc(8px + var(--safe-bot));z-index:20}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;opacity:.4}
+.tab.active{opacity:1}
+.tab-icon{font-size:19px}
+.tab-label{font-size:10px;font-weight:500;color:var(--gold)}
+
 .page{display:none;padding:14px 16px 0}
 .page.active{display:block}
+
 /* Hero */
-.hero{background:linear-gradient(135deg,#1a1c23 0%,#1e2130 100%);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 18px;margin-bottom:12px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);border-radius:50%}
-.hero-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
-.hero-amount{font-size:36px;font-weight:700;letter-spacing:-1px;color:var(--gold2);line-height:1}
-.hero-sub{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:14px}
-.hero-delta.up{color:var(--green);font-weight:600}
-.hero-delta.down{color:var(--red);font-weight:600}
-/* Cards */
-.section-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 9px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
-.card-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.hero{
+  background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(6,214,160,.1),rgba(168,85,247,.15));
+  border:1px solid rgba(99,102,241,.3);border-radius:20px;
+  padding:22px 20px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50px;right:-40px;width:160px;height:160px;
+  background:radial-gradient(circle,rgba(255,209,102,.15),transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-30px;left:-20px;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(76,201,240,.1),transparent 70%);border-radius:50%}
+.hero-label{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.hero-amount{font-size:38px;font-weight:800;letter-spacing:-1.5px;
+  background:linear-gradient(90deg,#ffd166,#06d6a0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:9px}
+.hero-delta.up{color:var(--green);font-weight:700}
+.hero-delta.down{color:var(--red);font-weight:700}
+
+.sec{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 9px;
+  display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+.card{background:rgba(22,29,46,.8);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;
+  backdrop-filter:blur(8px)}
+.card-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,53,80,.6)}
 .card-row:last-child{border-bottom:none;padding-bottom:0}
 .card-row:first-child{padding-top:0}
-.row-left{display:flex;flex-direction:column;gap:2px}
-.row-name{font-size:13px;font-weight:500}
-.row-detail{font-size:11px;color:var(--muted)}
-.row-right{text-align:right}
-.row-val{font-size:14px;font-weight:600}
-.row-val.pos{color:var(--green)}
-.row-val.neg{color:var(--red)}
-.price-tag{font-size:10px;color:var(--muted);margin-top:1px}
-/* Charts */
-.chart-wrap{display:flex;align-items:center;gap:14px;margin-bottom:12px}
-.legend{display:flex;flex-direction:column;gap:7px;flex:1}
-.leg-item{display:flex;align-items:center;gap:7px;font-size:12px}
-.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.leg-name{flex:1;color:var(--muted)}
-.leg-val{font-weight:600;font-size:11px}
-/* Summary 3-col */
-.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.sum-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
-.sum-label{font-size:10px;color:var(--muted);margin-bottom:4px}
-.sum-val{font-size:16px;font-weight:700}
-/* Input */
-.input-group{margin-bottom:12px}
-.input-label{font-size:12px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
-.input-label span{color:var(--gold);font-size:10px}
-input[type=number]{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:16px;color:var(--text);outline:none;-webkit-appearance:none}
-input[type=number]:focus{border-color:var(--gold)}
-input[type=number]::placeholder{color:var(--muted2)}
-.stock-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
-.stock-row input{flex:1}
-.stock-row label{font-size:12px;color:var(--muted);white-space:nowrap;min-width:58px}
-.save-btn{width:100%;background:var(--gold);color:#000;font-size:15px;font-weight:700;padding:14px;border-radius:var(--radius);border:none;cursor:pointer;margin-top:4px}
-.save-btn:active{opacity:.8;transform:scale(.98)}
-.save-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px}
+.rl{display:flex;flex-direction:column;gap:2px}
+.rn{font-size:13px;font-weight:500;color:var(--text)}
+.rd{font-size:11px;color:var(--muted)}
+.rr{text-align:right}
+.rv{font-size:14px;font-weight:700;color:var(--text)}
+.pt{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* Metric grid */
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.sum-card{border-radius:14px;padding:12px 8px;text-align:center;position:relative;overflow:hidden}
+.sum-card.s-blue{background:rgba(76,201,240,.12);border:1px solid rgba(76,201,240,.25)}
+.sum-card.s-green{background:rgba(6,214,160,.12);border:1px solid rgba(6,214,160,.25)}
+.sum-card.s-red{background:rgba(239,71,111,.12);border:1px solid rgba(239,71,111,.25)}
+.sl{font-size:10px;color:var(--muted);margin-bottom:4px}
+.sv{font-size:14px;font-weight:800}
+.sv.blue{color:var(--blue)}.sv.green{color:var(--green)}.sv.red{color:var(--red)}
+
+/* Allocation chart + stock list side by side */
+.alloc-wrap{display:flex;gap:12px;align-items:flex-start}
+.alloc-chart{flex-shrink:0}
+.alloc-list{flex:1;min-width:0}
+.alloc-item{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:12px;border-bottom:1px solid rgba(42,53,80,.4)}
+.alloc-item:last-child{border-bottom:none}
+.alloc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alloc-name{flex:1;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.alloc-pct{font-weight:700;font-size:11px;flex-shrink:0}
+
+/* CF */
+.cf-card{background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.cf-total{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.25);border-radius:10px;padding:11px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+
 /* Debt */
-.debt-card{background:#1a1114;border:1px solid #3a1f20;border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
-.debt-title{font-size:11px;color:#e74c3c88;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.net-row{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:10px;padding:11px 14px;margin-top:10px}
-.net-label{font-size:12px;color:var(--muted)}
-.net-val{font-size:17px;font-weight:700;color:var(--gold2)}
-/* Cashflow */
-.cf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
-/* Growth page */
-.scenario-tabs{display:flex;gap:8px;margin-bottom:14px}
-.stab{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);transition:all .15s}
-.stab.active{background:var(--gold);color:#000;font-weight:700;border-color:var(--gold)}
-.stab:active{opacity:.8}
-.growth-hero{background:linear-gradient(135deg,#141a14 0%,#1a2118 100%);border:1px solid #2a3a2a;border-radius:var(--radius);padding:20px;margin-bottom:12px;text-align:center}
-.growth-year10{font-size:34px;font-weight:700;color:var(--green);letter-spacing:-1px}
-.growth-label{font-size:11px;color:var(--muted);margin-bottom:6px}
-.growth-cagr{font-size:13px;color:var(--muted);margin-top:6px}
-.assumption-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.assumption-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.ass-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)}
+.debt-card{background:rgba(239,71,111,.07);border:1px solid rgba(239,71,111,.25);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.debt-title{font-size:10px;color:rgba(239,71,111,.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.net-row{display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);
+  border-radius:10px;padding:11px 14px;margin-top:10px}
+
+/* Input */
+input[type=number],input[type=text]{
+  width:100%;background:var(--card2);border:1px solid var(--border);
+  border-radius:10px;padding:11px 13px;font-size:16px;color:var(--text);outline:none;-webkit-appearance:none}
+input:focus{border-color:var(--gold)}
+input::placeholder{color:var(--muted2)}
+.save-btn{width:100%;
+  background:linear-gradient(135deg,#6366f1,#06d6a0);
+  color:#fff;font-size:15px;font-weight:700;padding:15px;
+  border-radius:var(--radius);border:none;cursor:pointer;margin-top:6px;
+  letter-spacing:.3px}
+.save-btn:active{opacity:.85}
+.save-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px}
+.dyn-section{background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.dyn-row{display:flex;gap:7px;align-items:center;margin-bottom:8px}
+.dyn-row:last-child{margin-bottom:0}
+.dyn-row input.name-inp{flex:1;min-width:0}
+.dyn-row input.val-inp{width:105px;flex-shrink:0}
+.dyn-row input.price-inp{width:85px;flex-shrink:0}
+.del-btn{background:rgba(239,71,111,.15);border:1px solid rgba(239,71,111,.3);color:var(--red);
+  border-radius:8px;padding:10px 11px;font-size:13px;cursor:pointer;flex-shrink:0}
+.del-btn:active{opacity:.7}
+.add-btn{width:100%;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);
+  border-radius:10px;padding:10px;font-size:13px;color:#a5b4fc;cursor:pointer;text-align:center;margin-top:4px}
+.add-btn:active{opacity:.7}
+.dyn-header{display:flex;gap:7px;font-size:10px;color:var(--muted2);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* Growth */
+.stabs{display:flex;gap:8px;margin-bottom:14px}
+.stab{flex:1;background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted)}
+.stab.active{background:linear-gradient(135deg,rgba(99,102,241,.5),rgba(6,214,160,.3));border-color:rgba(99,102,241,.6);color:#fff;font-weight:700}
+.growth-hero{background:linear-gradient(135deg,rgba(6,214,160,.15),rgba(99,102,241,.15));
+  border:1px solid rgba(6,214,160,.3);border-radius:var(--radius);padding:20px;margin-bottom:12px;text-align:center}
+.g10{font-size:36px;font-weight:800;letter-spacing:-1px;
+  background:linear-gradient(90deg,var(--green),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.g-cagr{font-size:12px;color:var(--muted);margin-top:6px}
+.ass-box{background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.ass-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.ass-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid rgba(42,53,80,.5)}
 .ass-row:last-child{border-bottom:none}
 .ass-name{color:var(--muted)}
-.ass-val{font-weight:600;color:var(--gold)}
-.history-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
-/* Spin */
-.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+.ass-val{font-weight:700;color:var(--gold)}
+
+/* Pledge */
+.pledge-card{background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.ptabs{display:flex;gap:8px;margin-bottom:12px}
+.ptab{flex:1;background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:10px;padding:9px 4px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted)}
+.ptab.active{background:rgba(76,201,240,.15);border-color:rgba(76,201,240,.5);color:var(--cyan)}
+.pr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(42,53,80,.5)}
+.pr-row:last-child{border-bottom:none}
+.pr-label{font-size:13px;color:var(--muted)}
+.pr-val{font-size:14px;font-weight:700}
+.c-blue{color:var(--blue)}.c-green{color:var(--green)}.c-red{color:var(--red)}.c-warn{color:var(--orange)}.c-gold{color:var(--gold)}
+.formula-box{background:rgba(76,201,240,.06);border:1px solid rgba(76,201,240,.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:12px;line-height:1.8;color:#7ec8e3}
+.history-wrap{background:rgba(22,29,46,.8);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--cyan);border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .last-update{font-size:10px;color:var(--muted2);text-align:center;margin:6px 0}
-.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:6px}
-.badge-g{background:rgba(46,204,113,.15);color:var(--green)}
-.badge-r{background:rgba(231,76,60,.15);color:var(--red)}
-.badge-y{background:rgba(201,168,76,.15);color:var(--gold)}
-.badge-b{background:rgba(74,158,255,.15);color:var(--blue)}
+.rate-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.rate-row label{font-size:13px;color:var(--muted);flex:1}
+.rate-row input{width:80px}
+.rate-suffix{font-size:12px;color:var(--muted)}
+.pledge-price-row{display:flex;align-items:center;gap:10px;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);border-radius:10px;padding:10px 14px;margin-bottom:12px}
+.pledge-price-row label{font-size:13px;color:var(--muted);flex:1}
+.pledge-price-row input{width:100px;background:rgba(10,14,26,.6);border:1px solid var(--gold);border-radius:8px;padding:8px 10px;font-size:15px;color:var(--gold2);outline:none;text-align:right}
+.badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:5px;margin-left:4px;vertical-align:middle;font-weight:600}
+.badge-auto{background:rgba(76,201,240,.15);color:var(--cyan)}
+.badge-manual{background:rgba(232,184,75,.15);color:var(--gold)}
+.price-status{font-size:10px;color:var(--muted);margin-top:2px}
+/* stock palette */
+.dot-colors{--c0:#4cc9f0;--c1:#a78bfa;--c2:#06d6a0;--c3:#ffd166;--c4:#f472b6;--c5:#fb923c;--c6:#22d3ee;--c7:#34d399;--c8:#f87171;--c9:#818cf8}
 </style>
 </head>
 <body>
@@ -117,416 +206,642 @@ input[type=number]::placeholder{color:var(--muted2)}
     <div class="header-title">💰 魏佐佐資產管理</div>
     <div class="header-date" id="headerDate"></div>
   </div>
-  <button class="sync-btn" onclick="fetchPrices()">
-    <span id="syncIcon">↻</span> 更新報價
-  </button>
+  <button class="sync-btn" onclick="fetchPrices()"><span id="syncIcon">↻</span> 更新報價</button>
 </div>
 
-<!-- ── 總覽 ── -->
+<!-- 總覽 -->
 <div class="page active" id="page-dashboard">
   <div class="hero">
     <div class="hero-label">淨資產（扣負債）</div>
     <div class="hero-amount" id="heroTotal">--</div>
-    <div class="hero-sub">
-      <span>較上月 <span class="hero-delta" id="heroDelta">--</span></span>
-      <span id="heroDate"></span>
-    </div>
+    <div class="hero-sub">較上月 <span class="hero-delta" id="heroDelta">--</span></div>
   </div>
 
   <div class="sum3">
-    <div class="sum-card"><div class="sum-label">股票市值</div><div class="sum-val" style="color:var(--blue)" id="sumStocks">--</div></div>
-    <div class="sum-card"><div class="sum-label">現金</div><div class="sum-val" style="color:var(--green)" id="sumCash">--</div></div>
-    <div class="sum-card"><div class="sum-label">負債</div><div class="sum-val" style="color:var(--red)" id="sumDebt">--</div></div>
+    <div class="sum-card s-blue"><div class="sl">股票市值</div><div class="sv blue" id="sumStocks">--</div></div>
+    <div class="sum-card s-green"><div class="sl">現金合計</div><div class="sv green" id="sumCash">--</div></div>
+    <div class="sum-card s-red"><div class="sl">負債</div><div class="sv red" id="sumDebt">--</div></div>
   </div>
 
   <div class="card">
-    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">配置比例</div>
-    <div class="chart-wrap">
-      <canvas id="donut" width="110" height="110"></canvas>
-      <div class="legend" id="legend"></div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">配置比例 ＆ 個股佔比</div>
+    <div class="alloc-wrap dot-colors">
+      <div class="alloc-chart"><canvas id="donut" width="120" height="120"></canvas></div>
+      <div class="alloc-list" id="allocList"></div>
     </div>
   </div>
 
-  <div class="section-title">台股</div>
-  <div class="card" id="twStockCard"></div>
-  <div class="section-title">美股</div>
-  <div class="card" id="usStockCard"></div>
-  <div class="section-title">現金</div>
+  <div class="sec">持股明細</div>
+  <div class="card" id="stockCard"></div>
+  <div class="sec">現金帳戶</div>
   <div class="card" id="cashCard"></div>
 
   <div class="debt-card">
     <div class="debt-title">負債</div>
     <div id="debtCard"></div>
     <div class="net-row">
-      <span class="net-label">淨資產</span>
-      <span class="net-val" id="netAsset">--</span>
+      <span style="font-size:12px;color:rgba(255,209,102,.7)">淨資產</span>
+      <span style="font-size:18px;font-weight:800;color:var(--gold2)" id="netAsset">--</span>
     </div>
   </div>
 
   <div class="cf-card">
-    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">月現金流</div>
-    <div class="card-row"><div class="row-name">月薪</div><div class="row-val pos" id="cfSalary">--</div></div>
-    <div class="card-row"><div class="row-name">利息支出</div><div class="row-val neg" id="cfInterest">--</div></div>
-    <div class="card-row" style="border-bottom:none"><div class="row-name" style="font-weight:600">月可支配</div><div class="row-val pos" id="cfNet">--</div></div>
+    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">月現金流</div>
+    <div id="cfRows"></div>
+    <div class="cf-total">
+      <span style="font-size:12px;color:rgba(6,214,160,.7)">月淨現金流</span>
+      <span style="font-size:19px;font-weight:800" id="cfNet">--</span>
+    </div>
   </div>
-
   <div class="last-update" id="lastUpdateTime"></div>
 </div>
 
-<!-- ── 預估成長 ── -->
-<div class="page" id="page-growth">
-  <div class="section-title" style="margin-top:4px">10年資產預估</div>
+<!-- 質押 -->
+<div class="page" id="page-pledge">
+  <div class="formula-box">
+    <strong style="color:var(--cyan)">斷頭股價公式</strong><br>
+    斷頭股價 = <strong style="color:var(--gold2)">質押時股價 × 質押成數 × 維持率</strong><br>
+    例：$104.45 × 40% × 1.3 = <strong style="color:var(--red)">$54.31</strong><br>
+    <span style="color:var(--muted2);font-size:11px">跌至此價位時銀行要求補繳或強制平倉</span>
+  </div>
 
-  <div class="scenario-tabs">
+  <!-- 質押股票設定 -->
+  <div class="pledge-card">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">📋 質押股票設定</div>
+    <div style="display:grid;grid-template-columns:1fr 80px 90px 36px;gap:7px;font-size:10px;color:var(--muted2);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+      <span>股號/名稱</span><span style="text-align:right">張數</span><span style="text-align:right">質押時股價</span><span></span>
+    </div>
+    <div id="pledgeStockRows"></div>
+    <button class="add-btn" onclick="addPledgeStock()" style="margin-top:8px">＋ 新增質押股票</button>
+  </div>
+
+  <div class="pledge-card">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">選擇質押成數</div>
+    <div class="ptabs">
+      <div class="ptab active" onclick="selectPledge(20,this)">20%</div>
+      <div class="ptab" onclick="selectPledge(30,this)">30%</div>
+      <div class="ptab" onclick="selectPledge(40,this)">40%</div>
+    </div>
+    <div id="pledgeResult"></div>
+  </div>
+
+  <div class="pledge-card">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">緩衝金規劃（跌10%預警）</div>
+    <div id="pledgeBuffer"></div>
+  </div>
+
+  <div class="ass-box">
+    <div class="ass-title">質押設定</div>
+    <div class="ass-row"><span class="ass-name">質押利率（年）</span><span class="ass-val" id="pledgeRateDisp">--</span></div>
+    <div class="ass-row" style="border:none"><span class="ass-name">維持率下限</span><span class="ass-val" id="maintainRateDisp">--</span></div>
+  </div>
+</div>
+
+<!-- 預估 -->
+<div class="page" id="page-growth">
+  <div class="sec" style="margin-top:4px">10年資產預估</div>
+  <div class="stabs">
     <div class="stab active" onclick="selectScenario('極保守',this)">極保守</div>
     <div class="stab" onclick="selectScenario('保守',this)">保守</div>
     <div class="stab" onclick="selectScenario('樂觀',this)">樂觀</div>
   </div>
-
   <div class="growth-hero">
-    <div class="growth-label">2036年 預估淨資產</div>
-    <div class="growth-year10" id="growth10y">--</div>
-    <div class="growth-cagr" id="growthCagr"></div>
+    <div class="g-label">2036年 預估淨資產</div>
+    <div class="g10" id="growth10y">--</div>
+    <div class="g-cagr" id="growthCagr"></div>
   </div>
-
-  <div class="history-wrap" style="margin-bottom:12px">
+  <div class="history-wrap">
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px">淨資產成長預測（萬）</div>
-    <div style="position:relative;height:200px">
-      <canvas id="growthChart" role="img" aria-label="10年資產預估折線圖">資產成長預估圖表</canvas>
-    </div>
+    <div style="position:relative;height:200px"><canvas id="growthChart" role="img" aria-label="10年預估">10年資產預估</canvas></div>
     <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--muted)">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#c9a84c"></span>極保守</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#4a9eff"></span>保守</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71"></span>樂觀</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--gold)"></span>極保守</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--blue)"></span>保守</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--green)"></span>樂觀</span>
     </div>
   </div>
-
-  <div class="assumption-box">
-    <div class="assumption-title" id="assumptTitle">極保守情境假設</div>
-    <div class="ass-row"><span class="ass-name">0050 年均報酬</span><span class="ass-val" id="ass0050">9.4%</span></div>
-    <div class="ass-row"><span class="ass-name">0050正2 年均報酬</span><span class="ass-val" id="ass0050L2">17.9%</span></div>
-    <div class="ass-row"><span class="ass-name">VT 年均報酬</span><span class="ass-val" id="assVT">8.0%</span></div>
-    <div class="ass-row"><span class="ass-name">美股個股 年均報酬</span><span class="ass-val" id="assUS">7.0%</span></div>
-    <div class="ass-row" style="border-bottom:none"><span class="ass-name">依據</span><span class="ass-val" style="font-size:10px;color:var(--muted)">過去10年台灣歷史CAGR×打折</span></div>
+  <div class="ass-box">
+    <div class="ass-title" id="assumptTitle">極保守情境假設</div>
+    <div class="ass-row"><span class="ass-name">0050</span><span class="ass-val" id="ass0050">9.4%</span></div>
+    <div class="ass-row"><span class="ass-name">0050正2</span><span class="ass-val" id="ass0050L2">17.9%</span></div>
+    <div class="ass-row"><span class="ass-name">VT</span><span class="ass-val" id="assVT">8.0%</span></div>
+    <div class="ass-row" style="border:none"><span class="ass-name">美股個股</span><span class="ass-val" id="assUS">7.0%</span></div>
   </div>
-
   <div class="card" id="growthTable"></div>
-
-  <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px">
-    <div style="font-size:10px;color:var(--muted);line-height:1.6">
-      ⚠️ 預估僅供參考，不保證實際報酬。極保守情境使用過去10年幾何平均報酬打八折；實際結果可能因市場波動大幅偏離。負債假設維持現狀未還本金（最保守假設）。
-    </div>
-  </div>
+  <div style="background:rgba(22,29,46,.6);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:10px;color:var(--muted);line-height:1.6">⚠️ 預估僅供參考。極保守使用過去10年幾何平均×0.8折。負債假設維持現狀。</div>
 </div>
 
-<!-- ── 歷史 ── -->
+<!-- 歷史 -->
 <div class="page" id="page-history">
-  <div class="section-title" style="margin-top:4px">總資產歷史</div>
+  <div class="sec" style="margin-top:4px">總資產歷史（每月記錄）</div>
   <div class="history-wrap">
-    <div style="position:relative;height:200px">
-      <canvas id="historyChart" role="img" aria-label="總資產歷史折線圖">總資產歷史記錄</canvas>
-    </div>
+    <div style="position:relative;height:210px"><canvas id="historyChart" role="img" aria-label="歷史">歷史</canvas></div>
     <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--muted)">
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#c9a84c"></span>淨資產</span>
-      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#4a9eff;opacity:.6"></span>總資產</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--gold)"></span>淨資產</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--blue);opacity:.6"></span>總資產</span>
     </div>
   </div>
-  <div class="section-title">記錄明細</div>
+  <div class="sec">明細</div>
   <div id="historyList"></div>
 </div>
 
-<!-- ── 更新 ── -->
+<!-- 更新 -->
 <div class="page" id="page-input">
-  <div style="font-size:15px;font-weight:600;margin:4px 0 14px">每月更新資料</div>
+  <div style="font-size:15px;font-weight:700;margin:4px 0 16px;
+    background:linear-gradient(90deg,var(--gold2),var(--cyan));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">每月更新資料</div>
 
-  <div class="section-title">現金帳戶</div>
-  <div class="card" style="padding:14px 16px">
-    <div class="input-group"><div class="input-label">郵局餘額 <span>緊急備用金</span></div><input type="number" id="inp_postal" placeholder="例：506302"></div>
-    <div class="input-group"><div class="input-label">銀行餘額 <span>活存/定存</span></div><input type="number" id="inp_bank" placeholder="例：554650"></div>
-    <div class="input-group" style="margin-bottom:0"><div class="input-label">房子銀行 <span>每月增加</span></div><input type="number" id="inp_housebank" placeholder="例：28439"></div>
-  </div>
+  <div class="sec">現金帳戶</div>
+  <div class="dyn-section" id="cashInputSection"></div>
+  <button class="add-btn" onclick="addRow('cash')">＋ 新增帳戶</button>
 
-  <div class="section-title">負債</div>
-  <div class="card" style="padding:14px 16px">
-    <div class="input-group"><div class="input-label">信貸餘額 <span>年利率3%</span></div><input type="number" id="inp_credit" placeholder="例：800000"></div>
-    <div class="input-group" style="margin-bottom:0"><div class="input-label">股票質押借款 <span>年利率2.5%</span></div><input type="number" id="inp_pledge" placeholder="例：787230"></div>
-  </div>
+  <div class="sec">負債</div>
+  <div class="dyn-section" id="debtInputSection"></div>
+  <button class="add-btn" onclick="addRow('debt')">＋ 新增負債</button>
 
-  <div class="section-title">持股數量</div>
-  <div class="card" style="padding:14px 16px">
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">台股（張）</div>
-    <div class="stock-row"><label>0050</label><input type="number" id="sh_0050"></div>
-    <div class="stock-row"><label>0050正2</label><input type="number" id="sh_0050L2"></div>
-    <div style="font-size:11px;color:var(--muted);margin:10px 0 10px">美股（股）</div>
-    <div class="stock-row"><label>VT</label><input type="number" id="sh_vt"></div>
-    <div class="stock-row"><label>NVDA</label><input type="number" id="sh_nvda"></div>
-    <div class="stock-row"><label>GOOG</label><input type="number" id="sh_goog"></div>
-    <div class="stock-row" style="margin-bottom:0"><label>MSFT</label><input type="number" id="sh_msft"></div>
-  </div>
+  <div class="sec">股票持倉</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:8px">股價欄：留空＝自動抓取　填入＝手動覆蓋</div>
+  <div class="dyn-section" id="stockInputSection"></div>
+  <button class="add-btn" onclick="addRow('stock')">＋ 新增持股</button>
 
-  <div class="section-title">設定</div>
+  <div class="sec">每月收入</div>
+  <div class="dyn-section" id="incomeInputSection"></div>
+  <button class="add-btn" onclick="addRow('income')">＋ 新增收入</button>
+
+  <div class="sec">每月支出</div>
+  <div class="dyn-section" id="expenseInputSection"></div>
+  <button class="add-btn" onclick="addRow('expense')">＋ 新增支出</button>
+
+  <div class="sec">利率設定</div>
   <div class="card" style="padding:14px 16px">
-    <div class="input-group" style="margin-bottom:0"><div class="input-label">月薪（稅後）</div><input type="number" id="inp_salary" placeholder="例：64000"></div>
+    <div class="rate-row"><label>信貸年利率</label><input type="number" id="inp_credit_rate" step="0.1"><span class="rate-suffix">%</span></div>
+    <div class="rate-row"><label>質押年利率</label><input type="number" id="inp_pledge_rate" step="0.1"><span class="rate-suffix">%</span></div>
+    <div class="rate-row" style="margin-bottom:0"><label>維持率下限</label><input type="number" id="inp_maintain_rate" step="1"><span class="rate-suffix">%</span></div>
   </div>
 
   <button class="save-btn" onclick="saveAndCalc()">💾 儲存並更新報告</button>
-  <div class="save-note">資料存在手機本機，不會上傳到任何地方</div>
+  <div class="save-note">資料存在手機本機，不會上傳</div>
   <div style="height:20px"></div>
 </div>
 
-<!-- Tab bar -->
 <div class="tabs">
   <div class="tab active" onclick="showPage('dashboard',this)"><div class="tab-icon">📊</div><div class="tab-label">總覽</div></div>
-  <div class="tab" onclick="showPage('growth',this)"><div class="tab-icon">🚀</div><div class="tab-label">預估成長</div></div>
+  <div class="tab" onclick="showPage('pledge',this)"><div class="tab-icon">🏦</div><div class="tab-label">質押</div></div>
+  <div class="tab" onclick="showPage('growth',this)"><div class="tab-icon">🚀</div><div class="tab-label">預估</div></div>
   <div class="tab" onclick="showPage('history',this)"><div class="tab-icon">📈</div><div class="tab-label">歷史</div></div>
   <div class="tab" onclick="showPage('input',this)"><div class="tab-icon">✏️</div><div class="tab-label">更新</div></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── DEFAULTS ──────────────────────────────────────────────────
-const DEFAULTS = {
-  postal:506302,bank:554650,housebank:28439,
-  credit:800000,pledge:787230,salary:64000,
-  sh_0050:100,sh_0050L2:100,sh_vt:296,sh_nvda:55,sh_goog:15,sh_msft:10
+const PALETTE=['#4cc9f0','#a78bfa','#06d6a0','#ffd166','#f472b6','#fb923c','#22d3ee','#34d399','#f87171','#818cf8'];
+
+const DEFAULT_STATE={
+  cash:[{name:'郵局',val:506302},{name:'銀行',val:554650},{name:'房子銀行',val:28439}],
+  debt:[{name:'信貸',val:800000},{name:'股票質押',val:0}],
+  stocks:[
+    {name:'0050',   shares:17,  unit:'張', manualPrice:null},
+    {name:'0050正2',shares:10,  unit:'張', manualPrice:null},
+    {name:'VT',     shares:296, unit:'股', manualPrice:null},
+    {name:'NVDA',   shares:55,  unit:'股', manualPrice:null},
+    {name:'GOOG',   shares:15,  unit:'股', manualPrice:null},
+    {name:'MSFT',   shares:10,  unit:'股', manualPrice:null}
+  ],
+  income:[{name:'月薪（稅後）',val:64000},{name:'房租收入',val:24594}],
+  expense:[{name:'房貸',val:40000}],
+  rates:{credit:3.0,pledge:2.5,maintain:130},
+  pledgeStocks:[{name:'0050',shares:17,price:104.45}]
 };
 
-let prices = {tw0050:182.41,tw0050L2:3.833,vtUSD:105,nvdaUSD:120,googUSD:165,msftUSD:430,usdTWD:32.5};
+// Auto-fetched prices
+let AP={'0050':104.45,'0050正2':3.833,'VT':105,'NVDA':120,'GOOG':165,'MSFT':430,usdTWD:32.5};
+const TW_AUTO=new Set(['0050','0050正2','00631L']);
+const US_STOCKS=new Set(['VT','NVDA','GOOG','MSFT','AAPL','AMZN','META','AMD','TSLA','SOFI','HIMS','UNH','OSCR','OKLO','NVO','PWR']);
+
+const SCENARIOS={
+  '極保守':{r:{'0050':0.0942,'0050正2':0.1794,'VT':0.08,default:0.07},label:'過去10年CAGR×0.8折'},
+  '保守':  {r:{'0050':0.1177,'0050正2':0.25,  'VT':0.10,default:0.09},label:'過去10年幾何平均'},
+  '樂觀':  {r:{'0050':0.1319,'0050正2':0.299, 'VT':0.12,default:0.12},label:'過去10年算術平均'},
+};
+
 let donutChart=null,growthChart=null,historyChartObj=null;
-let currentScenario='極保守';
+let currentScenario='極保守',currentPledgePct=20;
 
-// ── SCENARIO DATA (based on 10yr historical CAGR) ─────────────
-// 0050 CAGR=11.77%, 0050L2 CAGR=29.9%
-const SCENARIOS = {
-  '極保守':{r0050:0.0942,r0050L2:0.1794,rvt:0.08,rus:0.07,label:'過去10年CAGR × 0.8折'},
-  '保守':{r0050:0.1177,r0050L2:0.25,rvt:0.10,rus:0.09,label:'過去10年幾何平均CAGR'},
-  '樂觀':{r0050:0.1319,r0050L2:0.299,rvt:0.12,rus:0.12,label:'過去10年算術平均報酬'},
-};
+function loadS(){try{return JSON.parse(localStorage.getItem('assetState3'))||JSON.parse(JSON.stringify(DEFAULT_STATE));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_STATE));}}
+function saveS(o){localStorage.setItem('assetState3',JSON.stringify(o));}
+function loadH(){return JSON.parse(localStorage.getItem('assetHist3')||'[]');}
+function saveH(a){localStorage.setItem('assetHist3',JSON.stringify(a));}
 
-// ── STORAGE ───────────────────────────────────────────────────
-function loadS(){return Object.assign({},DEFAULTS,JSON.parse(localStorage.getItem('assetSettings')||'{}'));}
-function saveS(o){localStorage.setItem('assetSettings',JSON.stringify(Object.assign(loadS(),o)));}
-function loadH(){return JSON.parse(localStorage.getItem('assetHistory')||'[]');}
-function saveH(a){localStorage.setItem('assetHistory',JSON.stringify(a));}
+// Effective price: manual override > auto-fetch
+function effPrice(st){
+  if(st.manualPrice!=null&&st.manualPrice>0) return{p:st.manualPrice,src:'手動'};
+  if(AP[st.name]&&AP[st.name]>0) return{p:AP[st.name],src:'即時'};
+  return{p:0,src:'--'};
+}
+function stockTWD(st){
+  const{p}=effPrice(st);
+  const isUS=US_STOCKS.has(st.name);
+  return st.shares*(st.unit==='張'?1000:1)*p*(isUS?AP.usdTWD:1);
+}
 
-// ── PRICE FETCH ───────────────────────────────────────────────
+// ── FETCH ─────────────────────────────────────────────────────
 async function fetchPrices(){
   const btn=document.getElementById('syncIcon');
   btn.innerHTML='<span class="spin"></span>';
+
+  // Taiwan: 0050 + 00631L
   try{
     const r=await fetch('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_0050.tw|tse_00631L.tw&json=1&delay=0');
-    if(r.ok){const d=await r.json();if(d.msgArray){d.msgArray.forEach(s=>{const p=parseFloat(s.z||s.y);if(p>0){if(s.ch&&s.ch.includes('0050.tw')&&!s.ch.includes('631'))prices.tw0050=p;if(s.ch&&s.ch.includes('631'))prices.tw0050L2=p;}});}}
+    if(r.ok){const d=await r.json();if(d.msgArray)d.msgArray.forEach(s=>{
+      const p=parseFloat(s.z||s.y);if(!p)return;
+      if(s.ch&&s.ch.includes('0050.tw')&&!s.ch.includes('631')) AP['0050']=p;
+      if(s.ch&&s.ch.includes('631')) AP['0050正2']=p;
+    });}
   }catch(e){}
-  try{
-    const r=await fetch('https://open.er-api.com/v6/latest/USD');
-    if(r.ok){const d=await r.json();if(d.rates&&d.rates.TWD)prices.usdTWD=d.rates.TWD;}
-  }catch(e){}
+
+  // FX
+  try{const r=await fetch('https://open.er-api.com/v6/latest/USD');if(r.ok){const d=await r.json();if(d.rates?.TWD) AP.usdTWD=d.rates.TWD;}}catch(e){}
+
+  // US stocks via Yahoo Finance
+  const usSymbols=['VT','NVDA','GOOG','MSFT'];
+  for(const sym of usSymbols){
+    try{
+      const r=await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=1d&range=1d`);
+      if(r.ok){
+        const d=await r.json();
+        const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;
+        if(p&&p>0) AP[sym]=p;
+      }
+    }catch(e){}
+  }
+
   btn.innerHTML='↻';
   document.getElementById('lastUpdateTime').textContent='最後更新：'+new Date().toLocaleTimeString('zh-TW');
   renderDashboard();
+  if(document.getElementById('page-pledge').classList.contains('active')) renderPledge();
   if(document.getElementById('page-growth').classList.contains('active')) renderGrowth();
 }
 
 // ── CALC ──────────────────────────────────────────────────────
-function calc(s){
-  const rate=prices.usdTWD;
-  const tw0050v=s.sh_0050*1000*prices.tw0050;
-  const tw0050L2v=s.sh_0050L2*1000*prices.tw0050L2;
-  const vtV=s.sh_vt*prices.vtUSD*rate;
-  const nvdaV=s.sh_nvda*prices.nvdaUSD*rate;
-  const googV=s.sh_goog*prices.googUSD*rate;
-  const msftV=s.sh_msft*prices.msftUSD*rate;
-  const twS=tw0050v+tw0050L2v;
-  const usS=vtV+nvdaV+googV+msftV;
-  const cash=s.postal+s.bank+s.housebank;
-  const debt=s.credit+s.pledge;
-  const gross=twS+usS+cash;
-  const net=gross-debt;
-  const mi=(s.credit*0.03+s.pledge*0.025)/12;
-  return{tw0050v,tw0050L2v,vtV,nvdaV,googV,msftV,twS,usS,cash,debt,gross,net,mi,rate};
-}
-
-// ── PROJECTION ────────────────────────────────────────────────
-function project(s,a,scenario){
-  const sc=SCENARIOS[scenario];
-  let tw0=a.tw0050v,tw2=a.tw0050L2v,vt=a.vtV,us=a.nvdaV+a.googV+a.msftV,cash=a.cash;
-  const debt=a.debt;
-  const results=[{year:2026,net:a.net,gross:a.gross}];
-  for(let i=1;i<=10;i++){
-    tw0*=(1+sc.r0050);tw2*=(1+sc.r0050L2);vt*=(1+sc.rvt);us*=(1+sc.rus);cash*=1.005;
-    const gross=tw0+tw2+vt+us+cash;
-    const net=gross-debt;
-    results.push({year:2026+i,net:Math.round(net),gross:Math.round(gross)});
-  }
-  return results;
+function calcAll(s){
+  const totalCash=s.cash.reduce((a,c)=>a+c.val,0);
+  const totalDebt=s.debt.reduce((a,c)=>a+c.val,0);
+  const sVals=s.stocks.map(st=>({name:st.name,val:stockTWD(st),src:effPrice(st).src}));
+  const totalStocks=sVals.reduce((a,c)=>a+c.val,0);
+  const gross=totalCash+totalStocks;
+  const net=gross-totalDebt;
+  const creditD=s.debt.find(d=>d.name.includes('信貸'));
+  const pledgeD=s.debt.find(d=>d.name.includes('質押'));
+  const creditInt=creditD?creditD.val*(s.rates.credit/100)/12:0;
+  const pledgeInt=pledgeD?pledgeD.val*(s.rates.pledge/100)/12:0;
+  const totalIncome=s.income.reduce((a,c)=>a+c.val,0);
+  const manualExp=s.expense.reduce((a,c)=>a+c.val,0);
+  const totalExp=manualExp+creditInt+pledgeInt;
+  return{totalCash,totalDebt,totalStocks,gross,net,sVals,creditInt,pledgeInt,totalIncome,manualExp,totalExp,cfNet:totalIncome-totalExp};
 }
 
 // ── RENDER DASHBOARD ──────────────────────────────────────────
 function renderDashboard(){
-  const s=loadS();const a=calc(s);
-  const history=loadH();const prev=history.length>=2?history[history.length-2]:null;
+  const s=loadS(),a=calcAll(s);
+  const history=loadH(),prev=history.length>=2?history[history.length-2]:null;
+
   document.getElementById('heroTotal').textContent=fmt(a.net);
-  if(prev){const d=a.net-prev.net,p=(d/prev.net*100).toFixed(1);const el=document.getElementById('heroDelta');el.textContent=(d>=0?'+':'')+fmt(d)+' ('+p+'%)';el.className='hero-delta '+(d>=0?'up':'down');}
-  document.getElementById('sumStocks').textContent=fmtM(a.twS+a.usS);
-  document.getElementById('sumCash').textContent=fmtM(a.cash);
-  document.getElementById('sumDebt').textContent=fmtM(a.debt);
+  if(prev){const d=a.net-prev.net,p=(d/Math.abs(prev.net)*100).toFixed(1);const el=document.getElementById('heroDelta');el.textContent=(d>=0?'+':'')+fmt(d)+' ('+p+'%)';el.className='hero-delta '+(d>=0?'up':'down');}
+  else document.getElementById('heroDelta').textContent='（每月儲存後自動比較）';
+
+  document.getElementById('sumStocks').textContent=fmtM(a.totalStocks);
+  document.getElementById('sumCash').textContent=fmtM(a.totalCash);
+  document.getElementById('sumDebt').textContent=fmtM(a.totalDebt);
   document.getElementById('netAsset').textContent=fmt(a.net);
-  document.getElementById('cfSalary').textContent='$'+s.salary.toLocaleString();
-  document.getElementById('cfInterest').textContent='-$'+Math.round(a.mi).toLocaleString();
-  document.getElementById('cfNet').textContent='$'+Math.round(s.salary-a.mi).toLocaleString();
 
-  // Donut
-  const ctx=document.getElementById('donut').getContext('2d');
+  // Alloc donut + per-stock list
+  const tot=a.totalStocks+a.totalCash;
+  const allItems=[
+    ...a.sVals.map(v=>({n:v.name,v:v.val})),
+    {n:'現金',v:a.totalCash}
+  ].filter(x=>x.v>0);
+  const dCtx=document.getElementById('donut').getContext('2d');
   if(donutChart)donutChart.destroy();
-  const total=a.twS+a.usS+a.cash;
-  donutChart=new Chart(ctx,{type:'doughnut',data:{labels:['台股','美股','現金'],datasets:[{data:[a.twS,a.usS,a.cash],backgroundColor:['#4a9eff','#c9a84c','#2ecc71'],borderColor:'#181a1f',borderWidth:3}]},options:{responsive:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+Math.round(c.raw/total*100)+'%'}}}}});
-  const colors=['#4a9eff','#c9a84c','#2ecc71'],names=['台股','美股','現金'],vals=[a.twS,a.usS,a.cash];
-  document.getElementById('legend').innerHTML=names.map((n,i)=>`<div class="leg-item"><div class="leg-dot" style="background:${colors[i]}"></div><span class="leg-name">${n}</span><span class="leg-val">${Math.round(vals[i]/total*100)}%</span></div>`).join('');
+  donutChart=new Chart(dCtx,{type:'doughnut',data:{
+    labels:allItems.map(x=>x.n),
+    datasets:[{data:allItems.map(x=>x.v),backgroundColor:PALETTE.slice(0,allItems.length),borderColor:'rgba(22,29,46,.8)',borderWidth:3}]
+  },options:{responsive:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+(c.raw/tot*100).toFixed(1)+'%'}}}}});
 
-  document.getElementById('twStockCard').innerHTML=`
-    <div class="card-row"><div class="row-left"><div class="row-name">0050</div><div class="row-detail">${s.sh_0050}張 × $${prices.tw0050}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.tw0050v))}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">0050正2</div><div class="row-detail">${s.sh_0050L2}張 × $${prices.tw0050L2}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.tw0050L2v))}</div></div></div>`;
-  document.getElementById('usStockCard').innerHTML=`
-    <div class="card-row"><div class="row-left"><div class="row-name">VT</div><div class="row-detail">${s.sh_vt}股 × US$${prices.vtUSD} @ ${prices.usdTWD.toFixed(1)}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.vtV))}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">NVDA</div><div class="row-detail">${s.sh_nvda}股 × US$${prices.nvdaUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.nvdaV))}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">GOOG</div><div class="row-detail">${s.sh_goog}股 × US$${prices.googUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.googV))}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">MSFT</div><div class="row-detail">${s.sh_msft}股 × US$${prices.msftUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.msftV))}</div></div></div>`;
-  document.getElementById('cashCard').innerHTML=`
-    <div class="card-row"><div class="row-left"><div class="row-name">郵局</div><div class="row-detail">緊急備用金</div></div><div class="row-right"><div class="row-val">${fmt(s.postal)}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">銀行</div><div class="row-detail">一般存款</div></div><div class="row-right"><div class="row-val">${fmt(s.bank)}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">房子銀行</div><div class="row-detail">每月累積</div></div><div class="row-right"><div class="row-val">${fmt(s.housebank)}</div></div></div>`;
-  document.getElementById('debtCard').innerHTML=`
-    <div class="card-row" style="padding:0 0 8px"><div class="row-left"><div class="row-name">信貸</div><div class="row-detail">月息 ${fmt(Math.round(s.credit*0.03/12))}（年3%）</div></div><div class="row-right"><div class="row-val neg">${fmt(s.credit)}</div></div></div>
-    <div class="card-row"><div class="row-left"><div class="row-name">股票質押</div><div class="row-detail">月息 ${fmt(Math.round(s.pledge*0.025/12))}（年2.5%）</div></div><div class="row-right"><div class="row-val neg">${fmt(s.pledge)}</div></div></div>`;
+  document.getElementById('allocList').innerHTML=allItems.map((x,i)=>`
+    <div class="alloc-item">
+      <div class="alloc-dot" style="background:${PALETTE[i%10]}"></div>
+      <span class="alloc-name">${x.n}</span>
+      <span class="alloc-pct" style="color:${PALETTE[i%10]}">${(x.v/tot*100).toFixed(1)}%</span>
+    </div>`).join('');
+
+  // Stocks detail
+  document.getElementById('stockCard').innerHTML=s.stocks.map((st,i)=>{
+    const v=a.sVals[i].val,isUS=US_STOCKS.has(st.name);
+    const{p,src}=effPrice(st);
+    const badge=`<span class="badge ${src==='即時'?'badge-auto':'badge-manual'}">${src}</span>`;
+    const priceStr=isUS?`US$${p.toFixed(2)} @ ${AP.usdTWD.toFixed(1)}`:`$${p}`;
+    return `<div class="card-row"><div class="rl"><div class="rn">${st.name}${badge}</div><div class="rd">${st.shares}${st.unit} × ${priceStr}</div></div><div class="rr"><div class="rv">${fmt(Math.round(v))}</div><div class="pt">${(v/(a.totalStocks+a.totalCash)*100).toFixed(1)}%</div></div></div>`;
+  }).join('');
+
+  // Cash
+  document.getElementById('cashCard').innerHTML=
+    s.cash.map(c=>`<div class="card-row"><div class="rn">${c.name}</div><div class="rv">${fmt(c.val)}</div></div>`).join('')+
+    `<div class="card-row" style="border-top:1px solid var(--border)"><div class="rn" style="font-weight:700">合計</div><div class="rv" style="color:var(--green)">${fmt(a.totalCash)}</div></div>`;
+
+  // Debt
+  document.getElementById('debtCard').innerHTML=s.debt.map(d=>{
+    let det='';
+    if(d.name.includes('信貸')) det=`月息 ${fmt(Math.round(a.creditInt))}（年${s.rates.credit}%）`;
+    if(d.name.includes('質押')) det=`月息 ${fmt(Math.round(a.pledgeInt))}（年${s.rates.pledge}%）`;
+    return `<div class="card-row" style="padding:6px 0"><div class="rl"><div class="rn">${d.name}</div>${det?`<div class="rd">${det}</div>`:''}</div><div class="rr"><div class="rv" style="color:var(--red)">${fmt(d.val)}</div></div></div>`;
+  }).join('');
+
+  // CF
+  let h='';
+  s.income.forEach(i=>{h+=`<div class="card-row"><div class="rn">${i.name}</div><div class="rv" style="color:var(--green)">+${fmt(i.val)}</div></div>`;});
+  h+=`<div class="card-row" style="border-bottom:2px solid var(--border)"><div class="rn" style="color:var(--muted);font-size:12px">收入小計</div><div class="rv" style="color:var(--green)">+${fmt(Math.round(a.totalIncome))}</div></div>`;
+  s.expense.forEach(e=>{h+=`<div class="card-row"><div class="rn">${e.name}</div><div class="rv" style="color:var(--red)">-${fmt(e.val)}</div></div>`;});
+  if(a.creditInt>0) h+=`<div class="card-row"><div class="rn">信貸利息（自動）</div><div class="rv" style="color:var(--red)">-${fmt(Math.round(a.creditInt))}</div></div>`;
+  if(a.pledgeInt>0) h+=`<div class="card-row"><div class="rn">質押利息（自動）</div><div class="rv" style="color:var(--red)">-${fmt(Math.round(a.pledgeInt))}</div></div>`;
+  h+=`<div class="card-row" style="border:none"><div class="rn" style="color:var(--muted);font-size:12px">支出小計</div><div class="rv" style="color:var(--red)">-${fmt(Math.round(a.totalExp))}</div></div>`;
+  document.getElementById('cfRows').innerHTML=h;
+  const cfEl=document.getElementById('cfNet');
+  cfEl.textContent=(a.cfNet>=0?'+':'')+fmt(Math.round(a.cfNet));
+  cfEl.style.color=a.cfNet>=0?'var(--green)':'var(--red)';
 }
 
-// ── RENDER GROWTH ─────────────────────────────────────────────
-function renderGrowth(){
-  const s=loadS();const a=calc(s);
-  const sc=SCENARIOS[currentScenario];
+// ── PLEDGE ────────────────────────────────────────────────────
+function addPledgeStock(){
+  const s=loadS();
+  if(!s.pledgeStocks) s.pledgeStocks=[];
+  s.pledgeStocks.push({name:'',shares:0,price:0});
+  saveS(s); renderPledgeStockRows(s);
+}
+function delPledgeStock(idx){
+  const s=loadS();
+  s.pledgeStocks.splice(idx,1);
+  saveS(s); renderPledge();
+}
+function renderPledgeStockRows(s){
+  const container=document.getElementById('pledgeStockRows');
+  const stocks=s.pledgeStocks||[];
+  if(stocks.length===0){
+    container.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px 0;text-align:center">尚未設定質押股票，點下方＋新增</div>';
+    return;
+  }
+  container.innerHTML='';
+  stocks.forEach((st,i)=>{
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1fr 80px 90px 36px;gap:7px;margin-bottom:8px;align-items:center';
+    const ni=document.createElement('input');ni.type='text';ni.value=st.name;ni.placeholder='0050';
+    ni.style.cssText='background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 10px;font-size:14px;color:var(--text);outline:none';
+    ni.oninput=e=>{const s=loadS();s.pledgeStocks[i].name=e.target.value;saveS(s);};
+    const shi=document.createElement('input');shi.type='number';shi.value=st.shares||'';shi.placeholder='張';
+    shi.style.cssText='background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 8px;font-size:14px;color:var(--text);outline:none;text-align:right;width:100%';
+    shi.oninput=e=>{const s=loadS();s.pledgeStocks[i].shares=parseFloat(e.target.value)||0;saveS(s);};
+    const pi=document.createElement('input');pi.type='number';pi.value=st.price||'';pi.placeholder='股價';pi.step='0.01';
+    pi.style.cssText='background:var(--card2);border:1px solid rgba(255,209,102,.4);border-radius:8px;padding:9px 8px;font-size:14px;color:var(--gold2);outline:none;text-align:right;width:100%';
+    pi.oninput=e=>{const s=loadS();s.pledgeStocks[i].price=parseFloat(e.target.value)||0;saveS(s);calcPledgeDisplay(loadS());};
+    const db=document.createElement('button');db.className='del-btn';db.textContent='✕';db.onclick=()=>delPledgeStock(i);
+    row.appendChild(ni);row.appendChild(shi);row.appendChild(pi);row.appendChild(db);
+    container.appendChild(row);
+  });
+}
+function renderPledge(){
+  const s=loadS();
+  if(!s.pledgeStocks) s.pledgeStocks=[{name:'0050',shares:17,price:104.45}];
+  document.getElementById('pledgeRateDisp').textContent=s.rates.pledge+'%（年）';
+  document.getElementById('maintainRateDisp').textContent=s.rates.maintain+'%';
+  renderPledgeStockRows(s);
+  calcPledgeDisplay(s);
+}
+function calcPledgeDisplay(s){
+  const stocks=s.pledgeStocks||[];
+  const pct=currentPledgePct;
+  const mr=s.rates.maintain/100;
 
-  // Assumptions display
-  document.getElementById('assumptTitle').textContent=currentScenario+'情境假設';
-  document.getElementById('ass0050').textContent=(sc.r0050*100).toFixed(1)+'%';
-  document.getElementById('ass0050L2').textContent=(sc.r0050L2*100).toFixed(1)+'%';
-  document.getElementById('assVT').textContent=(sc.rvt*100).toFixed(1)+'%';
-  document.getElementById('assUS').textContent=(sc.rus*100).toFixed(1)+'%';
+  if(stocks.length===0||stocks.every(x=>!x.name||!x.shares||!x.price)){
+    document.getElementById('pledgeResult').innerHTML='<div style="color:var(--muted);padding:16px;text-align:center;font-size:13px">請在上方設定質押股票</div>';
+    document.getElementById('pledgeBuffer').innerHTML='';
+    return;
+  }
 
-  // All 3 scenarios for chart
-  const p1=project(s,a,'極保守');
-  const p2=project(s,a,'保守');
-  const p3=project(s,a,'樂觀');
-  const cur=project(s,a,currentScenario);
-  const final=cur[cur.length-1].net;
+  // Calculate total per stock
+  let resultHTML='';let totalBorrowed=0;let totalMonthlyInt=0;
+  const pledgeRate=s.rates.pledge/100;
 
-  document.getElementById('growth10y').textContent=fmtM(final);
-  const cagr=Math.pow(final/a.net,1/10)-1;
-  document.getElementById('growthCagr').textContent=`年化複合成長 ${(cagr*100).toFixed(1)}%（${sc.label}）`;
+  stocks.forEach(st=>{
+    if(!st.name||!st.shares||!st.price) return;
+    const shares=st.shares*1000;
+    const pp=st.price;
+    const pledgeVal=shares*pp;
+    const borrowed=pledgeVal*(pct/100);
+    const breakPrice=pp*(pct/100)*mr;
+    const monthlyInt=borrowed*pledgeRate/12;
+    // current price from AP or use pledge price as estimate
+    const curPrice=AP[st.name]||pp;
+    const dropPct=(curPrice-breakPrice)/curPrice*100;
+    const dColor=dropPct>30?'c-green':dropPct>15?'c-warn':'c-red';
+    totalBorrowed+=borrowed;
+    totalMonthlyInt+=monthlyInt;
 
-  // Chart
-  const labels=p1.map(d=>d.year+'');
-  const ctx2=document.getElementById('growthChart').getContext('2d');
-  if(growthChart)growthChart.destroy();
-  growthChart=new Chart(ctx2,{
-    type:'line',
-    data:{labels,datasets:[
-      {label:'極保守',data:p1.map(d=>Math.round(d.net/10000)),borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.08)',fill:true,borderWidth:2,pointRadius:2,tension:.3},
-      {label:'保守',data:p2.map(d=>Math.round(d.net/10000)),borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.05)',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[5,3]},
-      {label:'樂觀',data:p3.map(d=>Math.round(d.net/10000)),borderColor:'#2ecc71',backgroundColor:'rgba(46,204,113,.05)',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[3,3]}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#666',font:{size:10}},grid:{color:'#1e2028'}},y:{ticks:{color:'#666',font:{size:10},callback:v=>v+'萬'},grid:{color:'#1e2028'}}}}
+    resultHTML+=`
+      <div style="background:rgba(22,29,46,.6);border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid rgba(76,201,240,.15)">
+        <div style="font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:8px">${st.name}（${st.shares}張）</div>
+        <div class="pr-row"><span class="pr-label">質押時股價</span><span class="pr-val c-gold">$${pp}</span></div>
+        <div class="pr-row"><span class="pr-label">質押時市值</span><span class="pr-val">${fmt(Math.round(pledgeVal))}</span></div>
+        <div class="pr-row"><span class="pr-label">借出（${pct}%）</span><span class="pr-val c-blue">${fmt(Math.round(borrowed))}</span></div>
+        <div class="pr-row"><span class="pr-label">斷頭股價（×${pct}%×${s.rates.maintain}%）</span><span class="pr-val c-red">$${breakPrice.toFixed(2)}</span></div>
+        <div class="pr-row" style="border:none"><span class="pr-label">目前距斷頭</span><span class="pr-val ${dColor}">${dropPct.toFixed(1)}% 空間</span></div>
+      </div>`;
   });
 
-  // Table
-  document.getElementById('growthTable').innerHTML=
-    `<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">${currentScenario}情境逐年預估</div>`+
-    cur.map((d,i)=>i===0?'':`<div class="card-row"><div class="row-left"><div class="row-name">${d.year}年</div><div class="row-detail">${i}年後</div></div><div class="row-right"><div class="row-val" style="color:var(--green)">${fmtM(d.net)}</div><div class="price-tag">總資產 ${fmtM(d.gross)}</div></div></div>`).join('');
+  // Total summary
+  const totalAnnualInt=totalMonthlyInt*12;
+  resultHTML+=`
+    <div style="background:rgba(76,201,240,.08);border:1px solid rgba(76,201,240,.25);border-radius:10px;padding:12px">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">合計</div>
+      <div class="pr-row"><span class="pr-label">總借出金額</span><span class="pr-val c-blue">${fmt(Math.round(totalBorrowed))}</span></div>
+      <div class="pr-row"><span class="pr-label">月利息合計</span><span class="pr-val c-warn">${fmt(Math.round(totalMonthlyInt))}</span></div>
+      <div class="pr-row" style="border:none"><span class="pr-label">年利息合計</span><span class="pr-val c-warn">${fmt(Math.round(totalAnnualInt))}</span></div>
+    </div>`;
+
+  document.getElementById('pledgeResult').innerHTML=resultHTML;
+
+  // Buffer using first stock's current price
+  const st0=stocks.find(x=>x.name&&x.shares&&x.price);
+  const postal=s.cash.find(c=>c.name.includes('郵局'));
+  const postalVal=postal?postal.val:0;
+  if(st0){
+    const curP=AP[st0.name]||st0.price;
+    const warnP=curP*0.9;
+    const warnVal=st0.shares*1000*warnP;
+    const borrowed0=st0.shares*1000*st0.price*(pct/100);
+    const bufNeeded=Math.max(0,borrowed0*mr-warnVal);
+    document.getElementById('pledgeBuffer').innerHTML=`
+      <div class="pr-row"><span class="pr-label">以「${st0.name}」為例（跌10%）</span><span class="pr-val" style="font-size:11px;color:var(--muted)">市價$${curP.toFixed(2)} → $${warnP.toFixed(2)}</span></div>
+      <div class="pr-row"><span class="pr-label">預警時市值</span><span class="pr-val c-warn">${fmt(Math.round(warnVal))}</span></div>
+      <div class="pr-row"><span class="pr-label">需補繳</span><span class="pr-val ${bufNeeded>0?'c-red':'c-green'}">${bufNeeded>0?fmt(Math.round(bufNeeded)):'✓ 不需補繳'}</span></div>
+      <div class="pr-row"><span class="pr-label">郵局備用金</span><span class="pr-val c-green">${fmt(postalVal)}</span></div>
+      <div class="pr-row" style="border:none"><span class="pr-label">備用金是否充足</span><span class="pr-val ${postalVal>=bufNeeded?'c-green':'c-red'}">${postalVal>=bufNeeded?'✓ 充足':'✗ 不足 '+fmt(Math.round(bufNeeded-postalVal))}</span></div>`;
+  }
+}
+function selectPledge(pct,el){
+  currentPledgePct=pct;
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  else document.querySelectorAll('.ptab').forEach(t=>{if(t.textContent===pct+'%')t.classList.add('active');});
+  calcPledgeDisplay(loadS());
 }
 
-// ── RENDER HISTORY ────────────────────────────────────────────
+// ── GROWTH ────────────────────────────────────────────────────
+function project(s,a,scenario){
+  const sc=SCENARIOS[scenario];
+  let vals={};s.stocks.forEach((st,i)=>{vals[st.name]=a.sVals[i].val;});
+  let cash=a.totalCash;const debt=a.totalDebt;
+  const res=[{year:2026,net:a.net,gross:a.totalCash+a.totalStocks}];
+  for(let i=1;i<=10;i++){
+    let ns=0;s.stocks.forEach(st=>{const r=sc.r[st.name]??sc.r.default;vals[st.name]=(vals[st.name]||0)*(1+r);ns+=vals[st.name];});
+    cash*=1.005;const gross=ns+cash;res.push({year:2026+i,net:Math.round(gross-debt),gross:Math.round(gross)});
+  }
+  return res;
+}
+function renderGrowth(){
+  const s=loadS(),a=calcAll(s),sc=SCENARIOS[currentScenario];
+  document.getElementById('assumptTitle').textContent=currentScenario+'情境假設';
+  document.getElementById('ass0050').textContent=((sc.r['0050']||sc.r.default)*100).toFixed(1)+'%';
+  document.getElementById('ass0050L2').textContent=((sc.r['0050正2']||sc.r.default)*100).toFixed(1)+'%';
+  document.getElementById('assVT').textContent=((sc.r['VT']||sc.r.default)*100).toFixed(1)+'%';
+  document.getElementById('assUS').textContent=(sc.r.default*100).toFixed(1)+'%';
+  const p1=project(s,a,'極保守'),p2=project(s,a,'保守'),p3=project(s,a,'樂觀'),cur=project(s,a,currentScenario);
+  const final=cur[cur.length-1].net;
+  document.getElementById('growth10y').textContent=fmtM(final);
+  document.getElementById('growthCagr').textContent='年化複合成長 '+(((Math.abs(final/a.net))**(1/10)-1)*100).toFixed(1)+'%（'+sc.label+'）';
+  const ctx=document.getElementById('growthChart').getContext('2d');
+  if(growthChart)growthChart.destroy();
+  growthChart=new Chart(ctx,{type:'line',data:{labels:p1.map(d=>d.year+''),datasets:[
+    {label:'極保守',data:p1.map(d=>Math.round(d.net/10000)),borderColor:'#e8b84b',backgroundColor:'rgba(232,184,75,.08)',fill:true,borderWidth:2,pointRadius:2,tension:.3},
+    {label:'保守',data:p2.map(d=>Math.round(d.net/10000)),borderColor:'#4cc9f0',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[5,3]},
+    {label:'樂觀',data:p3.map(d=>Math.round(d.net/10000)),borderColor:'#06d6a0',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[3,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#6b7a9e',font:{size:10}},grid:{color:'rgba(42,53,80,.4)'}},y:{ticks:{color:'#6b7a9e',font:{size:10},callback:v=>v+'萬'},grid:{color:'rgba(42,53,80,.4)'}}}}});
+  document.getElementById('growthTable').innerHTML=
+    `<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">${currentScenario}逐年預估</div>`+
+    cur.map((d,i)=>i===0?'':`<div class="card-row"><div class="rl"><div class="rn">${d.year}年</div><div class="rd">${i}年後</div></div><div class="rr"><div class="rv" style="color:var(--green)">${fmtM(d.net)}</div><div class="pt">總資產 ${fmtM(d.gross)}</div></div></div>`).join('');
+}
+
+// ── HISTORY ───────────────────────────────────────────────────
 function renderHistory(){
   const history=loadH();
-  const listEl=document.getElementById('historyList');
-  if(history.length===0){listEl.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px 0">尚無記錄<br><small>請在「更新」頁面儲存資料</small></div>';return;}
-  const labels=history.map(h=>h.date);
-  const netD=history.map(h=>Math.round(h.net/10000));
-  const grossD=history.map(h=>Math.round(h.gross/10000));
+  if(history.length===0){
+    document.getElementById('historyList').innerHTML='<div style="text-align:center;color:var(--muted);padding:40px 0">尚無記錄<br><small style="font-size:11px">每次在「更新」頁儲存，自動記一筆</small></div>';
+    return;
+  }
   const ctx=document.getElementById('historyChart').getContext('2d');
   if(historyChartObj)historyChartObj.destroy();
-  historyChartObj=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'淨資產',data:netD,borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.1)',fill:true,borderWidth:2,pointRadius:3,tension:.3},{label:'總資產',data:grossD,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.04)',fill:true,borderWidth:1.5,pointRadius:3,tension:.3,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#666',font:{size:10},maxRotation:45},grid:{color:'#1e2028'}},y:{ticks:{color:'#666',font:{size:10},callback:v=>v+'萬'},grid:{color:'#1e2028'}}}}});
-  listEl.innerHTML=[...history].reverse().map(h=>`<div class="card" style="margin-bottom:9px;padding:12px 14px"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600">${h.date}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">總資產 ${fmtM(h.gross)}</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:700;color:var(--gold2)">${fmtM(h.net)}</div><div style="font-size:10px;color:var(--muted)">淨資產</div></div></div></div>`).join('');
+  historyChartObj=new Chart(ctx,{type:'line',data:{labels:history.map(h=>h.date),datasets:[
+    {label:'淨資產',data:history.map(h=>Math.round(h.net/10000)),borderColor:'#e8b84b',backgroundColor:'rgba(232,184,75,.12)',fill:true,borderWidth:2.5,pointRadius:4,tension:.3},
+    {label:'總資產',data:history.map(h=>Math.round(h.gross/10000)),borderColor:'#4cc9f0',fill:false,borderWidth:1.5,pointRadius:3,tension:.3,borderDash:[5,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#6b7a9e',font:{size:10},maxRotation:45},grid:{color:'rgba(42,53,80,.4)'}},y:{ticks:{color:'#6b7a9e',font:{size:10},callback:v=>v+'萬'},grid:{color:'rgba(42,53,80,.4)'}}}},});
+  document.getElementById('historyList').innerHTML=[...history].reverse().map(h=>`
+    <div class="card" style="margin-bottom:9px;padding:12px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:13px;font-weight:600">${h.date}</div><div style="font-size:11px;color:var(--muted)">總資產 ${fmtM(h.gross)}</div></div>
+        <div style="text-align:right"><div style="font-size:16px;font-weight:800;color:var(--gold2)">${fmtM(h.net)}</div><div style="font-size:10px;color:var(--muted)">淨資產</div></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── DYNAMIC INPUT ─────────────────────────────────────────────
+function addRow(type){
+  const s=loadS();
+  if(type==='cash')s.cash.push({name:'',val:0});
+  else if(type==='debt')s.debt.push({name:'',val:0});
+  else if(type==='stock')s.stocks.push({name:'',shares:0,unit:'張',manualPrice:null});
+  else if(type==='income')s.income.push({name:'',val:0});
+  else if(type==='expense')s.expense.push({name:'',val:0});
+  saveS(s);prefill();
+}
+function delRow(type,idx){
+  const s=loadS();
+  const arr={cash:s.cash,debt:s.debt,stock:s.stocks,income:s.income,expense:s.expense}[type];
+  if(arr) arr.splice(idx,1);
+  saveS(s);prefill();
+}
+function buildSimple(secId,arr,type,nPH,vPH){
+  const sec=document.getElementById(secId);
+  sec.innerHTML=`<div class="dyn-header"><span style="flex:1">名稱</span><span style="width:105px">金額</span><span style="width:34px"></span></div>`;
+  arr.forEach((item,i)=>{
+    const row=document.createElement('div');row.className='dyn-row';
+    const ni=document.createElement('input');ni.type='text';ni.className='name-inp';ni.value=item.name;ni.placeholder=nPH;
+    ni.oninput=e=>{const s=loadS();s[type][i].name=e.target.value;saveS(s);};
+    const vi=document.createElement('input');vi.type='number';vi.className='val-inp';vi.value=item.val;vi.placeholder=vPH;
+    vi.oninput=e=>{const s=loadS();s[type][i].val=parseFloat(e.target.value)||0;saveS(s);};
+    const db=document.createElement('button');db.className='del-btn';db.textContent='✕';db.onclick=()=>delRow(type,i);
+    row.appendChild(ni);row.appendChild(vi);row.appendChild(db);sec.appendChild(row);
+  });
+}
+function buildStocks(){
+  const s=loadS(),sec=document.getElementById('stockInputSection');
+  sec.innerHTML=`<div class="dyn-header"><span style="flex:1">代號</span><span style="width:75px;text-align:right">數量</span><span style="width:85px;text-align:right">股價(手動)</span><span style="width:34px"></span></div>`;
+  s.stocks.forEach((st,i)=>{
+    const row=document.createElement('div');row.className='dyn-row';
+    const ni=document.createElement('input');ni.type='text';ni.className='name-inp';ni.value=st.name;ni.placeholder='代號';
+    ni.oninput=e=>{const s=loadS();s.stocks[i].name=e.target.value;saveS(s);};
+    const si=document.createElement('input');si.type='number';si.className='val-inp';si.style.width='75px';si.value=st.shares;si.placeholder='數量';
+    si.oninput=e=>{const s=loadS();s.stocks[i].shares=parseFloat(e.target.value)||0;saveS(s);};
+    const pi=document.createElement('input');pi.type='number';pi.className='price-inp';pi.value=st.manualPrice||'';pi.placeholder='自動';pi.step='0.01';
+    pi.oninput=e=>{const s=loadS();const v=parseFloat(e.target.value);s.stocks[i].manualPrice=(!isNaN(v)&&v>0)?v:null;saveS(s);};
+    const db=document.createElement('button');db.className='del-btn';db.textContent='✕';db.onclick=()=>delRow('stock',i);
+    row.appendChild(ni);row.appendChild(si);row.appendChild(pi);row.appendChild(db);sec.appendChild(row);
+  });
+}
+function prefill(){
+  const s=loadS();
+  buildSimple('cashInputSection',s.cash,'cash','帳戶名稱','金額');
+  buildSimple('debtInputSection',s.debt,'debt','負債名稱','金額');
+  buildStocks();
+  buildSimple('incomeInputSection',s.income,'income','收入項目','金額');
+  buildSimple('expenseInputSection',s.expense,'expense','支出項目','金額');
+  document.getElementById('inp_credit_rate').value=s.rates.credit;
+  document.getElementById('inp_pledge_rate').value=s.rates.pledge;
+  document.getElementById('inp_maintain_rate').value=s.rates.maintain;
 }
 
 // ── SAVE ──────────────────────────────────────────────────────
 function saveAndCalc(){
-  const g=id=>{const v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;};
-  const cur=loadS();
-  const settings={
-    postal:g('inp_postal')??cur.postal,bank:g('inp_bank')??cur.bank,housebank:g('inp_housebank')??cur.housebank,
-    credit:g('inp_credit')??cur.credit,pledge:g('inp_pledge')??cur.pledge,salary:g('inp_salary')??cur.salary,
-    sh_0050:g('sh_0050')??cur.sh_0050,sh_0050L2:g('sh_0050L2')??cur.sh_0050L2,sh_vt:g('sh_vt')??cur.sh_vt,
-    sh_nvda:g('sh_nvda')??cur.sh_nvda,sh_goog:g('sh_goog')??cur.sh_goog,sh_msft:g('sh_msft')??cur.sh_msft
-  };
-  saveS(settings);
-  const a=calc(settings);
+  const s=loadS();
+  s.rates.credit=parseFloat(document.getElementById('inp_credit_rate').value)||s.rates.credit;
+  s.rates.pledge=parseFloat(document.getElementById('inp_pledge_rate').value)||s.rates.pledge;
+  s.rates.maintain=parseFloat(document.getElementById('inp_maintain_rate').value)||s.rates.maintain;
+  saveS(s);
+  const a=calcAll(s);
   const dateStr=new Date().getFullYear()+'/'+(new Date().getMonth()+1).toString().padStart(2,'0');
   const history=loadH();
+  const rec={date:dateStr,net:a.net,gross:a.totalCash+a.totalStocks,debt:a.totalDebt,cash:a.totalCash};
   const idx=history.findIndex(h=>h.date===dateStr);
-  const rec={date:dateStr,net:a.net,gross:a.gross,debt:a.debt,cash:a.cash};
   if(idx>=0)history[idx]=rec;else history.push(rec);
   saveH(history);
-  alert('✅ 儲存完成！');
+  alert('✅ 儲存完成！本月記錄已更新。');
   showPage('dashboard',document.querySelector('.tab'));
   renderDashboard();
 }
 
-// ── SCENARIO SELECT ───────────────────────────────────────────
-function selectScenario(name,el){
-  currentScenario=name;
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  renderGrowth();
-}
-
-// ── PREFILL ───────────────────────────────────────────────────
-function prefill(){
-  const s=loadS();
-  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;};
-  set('inp_postal',s.postal);set('inp_bank',s.bank);set('inp_housebank',s.housebank);
-  set('inp_credit',s.credit);set('inp_pledge',s.pledge);set('inp_salary',s.salary);
-  set('sh_0050',s.sh_0050);set('sh_0050L2',s.sh_0050L2);set('sh_vt',s.sh_vt);
-  set('sh_nvda',s.sh_nvda);set('sh_goog',s.sh_goog);set('sh_msft',s.sh_msft);
-}
-
-// ── NAV ───────────────────────────────────────────────────────
+function selectScenario(name,el){currentScenario=name;document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderGrowth();}
 function showPage(name,tabEl){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   tabEl.closest('.tab').classList.add('active');
   if(name==='history')renderHistory();
-  if(name==='growth')renderGrowth();
-  if(name==='input')prefill();
+  else if(name==='growth')renderGrowth();
+  else if(name==='pledge')renderPledge();
+  else if(name==='input')prefill();
 }
-
-// ── FORMAT ────────────────────────────────────────────────────
-function fmt(n){return(n<0?'-$':'$')+Math.abs(n).toLocaleString('zh-TW');}
+function fmt(n){return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString('zh-TW');}
 function fmtM(n){return'$'+(n/10000).toFixed(0)+'萬';}
 
-// ── INIT ──────────────────────────────────────────────────────
 function init(){
   document.getElementById('headerDate').textContent=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
-  const history=loadH();
-  if(history.length===0){
-    saveH([
-      {date:'2023/04',net:2857162,gross:3457162,debt:600000,cash:1686004},
-      {date:'2024/01',net:3072273,gross:3472273,debt:400000,cash:1774929},
-      {date:'2024/09',net:5140063,gross:5540063,debt:400000,cash:1183825},
-      {date:'2025/01',net:3273025,gross:3673025,debt:400000,cash:1462822},
-      {date:'2025/10',net:4027901,gross:4427901,debt:400000,cash:2338767},
-      {date:'2026/06',net:3365440,gross:4952670,debt:1587230,cash:1089391},
-    ]);
-  }
+  if(!localStorage.getItem('assetState3')) saveS(JSON.parse(JSON.stringify(DEFAULT_STATE)));
   renderDashboard();
   fetchPrices();
 }
