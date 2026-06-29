@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="魏佐佐資產">
+<title>魏佐佐資產管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0e0f11;--card:#181a1f;--card2:#20232a;--border:#2a2d35;
+  --gold:#c9a84c;--gold2:#f0c866;--green:#2ecc71;--red:#e74c3c;
+  --blue:#4a9eff;--purple:#9b59b6;--text:#f0f0f0;--muted:#888;--muted2:#555;
+  --radius:14px;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;min-height:100vh;padding-bottom:calc(84px + var(--safe-bot))}
+.header{padding:calc(var(--safe-top) + 16px) 20px 14px;display:flex;justify-content:space-between;align-items:flex-end;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:1px solid var(--border)}
+.header-title{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.header-date{font-size:12px;color:var(--muted);margin-top:2px}
+.sync-btn{background:var(--card2);border:1px solid var(--border);color:var(--gold);font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.sync-btn:active{opacity:.7}
+.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(14,15,17,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:8px 0 calc(8px + var(--safe-bot));z-index:20}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;opacity:.45;transition:opacity .15s}
+.tab.active{opacity:1;color:var(--gold)}
+.tab-icon{font-size:20px}
+.tab-label{font-size:10px;font-weight:500}
+.page{display:none;padding:14px 16px 0}
+.page.active{display:block}
+/* Hero */
+.hero{background:linear-gradient(135deg,#1a1c23 0%,#1e2130 100%);border:1px solid var(--border);border-radius:var(--radius);padding:22px 20px 18px;margin-bottom:12px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);border-radius:50%}
+.hero-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.hero-amount{font-size:36px;font-weight:700;letter-spacing:-1px;color:var(--gold2);line-height:1}
+.hero-sub{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:14px}
+.hero-delta.up{color:var(--green);font-weight:600}
+.hero-delta.down{color:var(--red);font-weight:600}
+/* Cards */
+.section-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 9px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.card-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.card-row:last-child{border-bottom:none;padding-bottom:0}
+.card-row:first-child{padding-top:0}
+.row-left{display:flex;flex-direction:column;gap:2px}
+.row-name{font-size:13px;font-weight:500}
+.row-detail{font-size:11px;color:var(--muted)}
+.row-right{text-align:right}
+.row-val{font-size:14px;font-weight:600}
+.row-val.pos{color:var(--green)}
+.row-val.neg{color:var(--red)}
+.price-tag{font-size:10px;color:var(--muted);margin-top:1px}
+/* Charts */
+.chart-wrap{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.leg-item{display:flex;align-items:center;gap:7px;font-size:12px}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.leg-name{flex:1;color:var(--muted)}
+.leg-val{font-weight:600;font-size:11px}
+/* Summary 3-col */
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
+.sum-label{font-size:10px;color:var(--muted);margin-bottom:4px}
+.sum-val{font-size:16px;font-weight:700}
+/* Input */
+.input-group{margin-bottom:12px}
+.input-label{font-size:12px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
+.input-label span{color:var(--gold);font-size:10px}
+input[type=number]{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:16px;color:var(--text);outline:none;-webkit-appearance:none}
+input[type=number]:focus{border-color:var(--gold)}
+input[type=number]::placeholder{color:var(--muted2)}
+.stock-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.stock-row input{flex:1}
+.stock-row label{font-size:12px;color:var(--muted);white-space:nowrap;min-width:58px}
+.save-btn{width:100%;background:var(--gold);color:#000;font-size:15px;font-weight:700;padding:14px;border-radius:var(--radius);border:none;cursor:pointer;margin-top:4px}
+.save-btn:active{opacity:.8;transform:scale(.98)}
+.save-note{font-size:11px;color:var(--muted);text-align:center;margin-top:9px}
+/* Debt */
+.debt-card{background:#1a1114;border:1px solid #3a1f20;border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+.debt-title{font-size:11px;color:#e74c3c88;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.net-row{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:10px;padding:11px 14px;margin-top:10px}
+.net-label{font-size:12px;color:var(--muted)}
+.net-val{font-size:17px;font-weight:700;color:var(--gold2)}
+/* Cashflow */
+.cf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px}
+/* Growth page */
+.scenario-tabs{display:flex;gap:8px;margin-bottom:14px}
+.stab{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 4px;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);transition:all .15s}
+.stab.active{background:var(--gold);color:#000;font-weight:700;border-color:var(--gold)}
+.stab:active{opacity:.8}
+.growth-hero{background:linear-gradient(135deg,#141a14 0%,#1a2118 100%);border:1px solid #2a3a2a;border-radius:var(--radius);padding:20px;margin-bottom:12px;text-align:center}
+.growth-year10{font-size:34px;font-weight:700;color:var(--green);letter-spacing:-1px}
+.growth-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.growth-cagr{font-size:13px;color:var(--muted);margin-top:6px}
+.assumption-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.assumption-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.ass-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)}
+.ass-row:last-child{border-bottom:none}
+.ass-name{color:var(--muted)}
+.ass-val{font-weight:600;color:var(--gold)}
+.history-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+/* Spin */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.last-update{font-size:10px;color:var(--muted2);text-align:center;margin:6px 0}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:6px}
+.badge-g{background:rgba(46,204,113,.15);color:var(--green)}
+.badge-r{background:rgba(231,76,60,.15);color:var(--red)}
+.badge-y{background:rgba(201,168,76,.15);color:var(--gold)}
+.badge-b{background:rgba(74,158,255,.15);color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">💰 魏佐佐資產管理</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+  <button class="sync-btn" onclick="fetchPrices()">
+    <span id="syncIcon">↻</span> 更新報價
+  </button>
+</div>
+
+<!-- ── 總覽 ── -->
+<div class="page active" id="page-dashboard">
+  <div class="hero">
+    <div class="hero-label">淨資產（扣負債）</div>
+    <div class="hero-amount" id="heroTotal">--</div>
+    <div class="hero-sub">
+      <span>較上月 <span class="hero-delta" id="heroDelta">--</span></span>
+      <span id="heroDate"></span>
+    </div>
+  </div>
+
+  <div class="sum3">
+    <div class="sum-card"><div class="sum-label">股票市值</div><div class="sum-val" style="color:var(--blue)" id="sumStocks">--</div></div>
+    <div class="sum-card"><div class="sum-label">現金</div><div class="sum-val" style="color:var(--green)" id="sumCash">--</div></div>
+    <div class="sum-card"><div class="sum-label">負債</div><div class="sum-val" style="color:var(--red)" id="sumDebt">--</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">配置比例</div>
+    <div class="chart-wrap">
+      <canvas id="donut" width="110" height="110"></canvas>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+
+  <div class="section-title">台股</div>
+  <div class="card" id="twStockCard"></div>
+  <div class="section-title">美股</div>
+  <div class="card" id="usStockCard"></div>
+  <div class="section-title">現金</div>
+  <div class="card" id="cashCard"></div>
+
+  <div class="debt-card">
+    <div class="debt-title">負債</div>
+    <div id="debtCard"></div>
+    <div class="net-row">
+      <span class="net-label">淨資產</span>
+      <span class="net-val" id="netAsset">--</span>
+    </div>
+  </div>
+
+  <div class="cf-card">
+    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">月現金流</div>
+    <div class="card-row"><div class="row-name">月薪</div><div class="row-val pos" id="cfSalary">--</div></div>
+    <div class="card-row"><div class="row-name">利息支出</div><div class="row-val neg" id="cfInterest">--</div></div>
+    <div class="card-row" style="border-bottom:none"><div class="row-name" style="font-weight:600">月可支配</div><div class="row-val pos" id="cfNet">--</div></div>
+  </div>
+
+  <div class="last-update" id="lastUpdateTime"></div>
+</div>
+
+<!-- ── 預估成長 ── -->
+<div class="page" id="page-growth">
+  <div class="section-title" style="margin-top:4px">10年資產預估</div>
+
+  <div class="scenario-tabs">
+    <div class="stab active" onclick="selectScenario('極保守',this)">極保守</div>
+    <div class="stab" onclick="selectScenario('保守',this)">保守</div>
+    <div class="stab" onclick="selectScenario('樂觀',this)">樂觀</div>
+  </div>
+
+  <div class="growth-hero">
+    <div class="growth-label">2036年 預估淨資產</div>
+    <div class="growth-year10" id="growth10y">--</div>
+    <div class="growth-cagr" id="growthCagr"></div>
+  </div>
+
+  <div class="history-wrap" style="margin-bottom:12px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">淨資產成長預測（萬）</div>
+    <div style="position:relative;height:200px">
+      <canvas id="growthChart" role="img" aria-label="10年資產預估折線圖">資產成長預估圖表</canvas>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--muted)">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#c9a84c"></span>極保守</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#4a9eff"></span>保守</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71"></span>樂觀</span>
+    </div>
+  </div>
+
+  <div class="assumption-box">
+    <div class="assumption-title" id="assumptTitle">極保守情境假設</div>
+    <div class="ass-row"><span class="ass-name">0050 年均報酬</span><span class="ass-val" id="ass0050">9.4%</span></div>
+    <div class="ass-row"><span class="ass-name">0050正2 年均報酬</span><span class="ass-val" id="ass0050L2">17.9%</span></div>
+    <div class="ass-row"><span class="ass-name">VT 年均報酬</span><span class="ass-val" id="assVT">8.0%</span></div>
+    <div class="ass-row"><span class="ass-name">美股個股 年均報酬</span><span class="ass-val" id="assUS">7.0%</span></div>
+    <div class="ass-row" style="border-bottom:none"><span class="ass-name">依據</span><span class="ass-val" style="font-size:10px;color:var(--muted)">過去10年台灣歷史CAGR×打折</span></div>
+  </div>
+
+  <div class="card" id="growthTable"></div>
+
+  <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px">
+    <div style="font-size:10px;color:var(--muted);line-height:1.6">
+      ⚠️ 預估僅供參考，不保證實際報酬。極保守情境使用過去10年幾何平均報酬打八折；實際結果可能因市場波動大幅偏離。負債假設維持現狀未還本金（最保守假設）。
+    </div>
+  </div>
+</div>
+
+<!-- ── 歷史 ── -->
+<div class="page" id="page-history">
+  <div class="section-title" style="margin-top:4px">總資產歷史</div>
+  <div class="history-wrap">
+    <div style="position:relative;height:200px">
+      <canvas id="historyChart" role="img" aria-label="總資產歷史折線圖">總資產歷史記錄</canvas>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--muted)">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#c9a84c"></span>淨資產</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:#4a9eff;opacity:.6"></span>總資產</span>
+    </div>
+  </div>
+  <div class="section-title">記錄明細</div>
+  <div id="historyList"></div>
+</div>
+
+<!-- ── 更新 ── -->
+<div class="page" id="page-input">
+  <div style="font-size:15px;font-weight:600;margin:4px 0 14px">每月更新資料</div>
+
+  <div class="section-title">現金帳戶</div>
+  <div class="card" style="padding:14px 16px">
+    <div class="input-group"><div class="input-label">郵局餘額 <span>緊急備用金</span></div><input type="number" id="inp_postal" placeholder="例：506302"></div>
+    <div class="input-group"><div class="input-label">銀行餘額 <span>活存/定存</span></div><input type="number" id="inp_bank" placeholder="例：554650"></div>
+    <div class="input-group" style="margin-bottom:0"><div class="input-label">房子銀行 <span>每月增加</span></div><input type="number" id="inp_housebank" placeholder="例：28439"></div>
+  </div>
+
+  <div class="section-title">負債</div>
+  <div class="card" style="padding:14px 16px">
+    <div class="input-group"><div class="input-label">信貸餘額 <span>年利率3%</span></div><input type="number" id="inp_credit" placeholder="例：800000"></div>
+    <div class="input-group" style="margin-bottom:0"><div class="input-label">股票質押借款 <span>年利率2.5%</span></div><input type="number" id="inp_pledge" placeholder="例：787230"></div>
+  </div>
+
+  <div class="section-title">持股數量</div>
+  <div class="card" style="padding:14px 16px">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">台股（張）</div>
+    <div class="stock-row"><label>0050</label><input type="number" id="sh_0050"></div>
+    <div class="stock-row"><label>0050正2</label><input type="number" id="sh_0050L2"></div>
+    <div style="font-size:11px;color:var(--muted);margin:10px 0 10px">美股（股）</div>
+    <div class="stock-row"><label>VT</label><input type="number" id="sh_vt"></div>
+    <div class="stock-row"><label>NVDA</label><input type="number" id="sh_nvda"></div>
+    <div class="stock-row"><label>GOOG</label><input type="number" id="sh_goog"></div>
+    <div class="stock-row" style="margin-bottom:0"><label>MSFT</label><input type="number" id="sh_msft"></div>
+  </div>
+
+  <div class="section-title">設定</div>
+  <div class="card" style="padding:14px 16px">
+    <div class="input-group" style="margin-bottom:0"><div class="input-label">月薪（稅後）</div><input type="number" id="inp_salary" placeholder="例：64000"></div>
+  </div>
+
+  <button class="save-btn" onclick="saveAndCalc()">💾 儲存並更新報告</button>
+  <div class="save-note">資料存在手機本機，不會上傳到任何地方</div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- Tab bar -->
+<div class="tabs">
+  <div class="tab active" onclick="showPage('dashboard',this)"><div class="tab-icon">📊</div><div class="tab-label">總覽</div></div>
+  <div class="tab" onclick="showPage('growth',this)"><div class="tab-icon">🚀</div><div class="tab-label">預估成長</div></div>
+  <div class="tab" onclick="showPage('history',this)"><div class="tab-icon">📈</div><div class="tab-label">歷史</div></div>
+  <div class="tab" onclick="showPage('input',this)"><div class="tab-icon">✏️</div><div class="tab-label">更新</div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ── DEFAULTS ──────────────────────────────────────────────────
+const DEFAULTS = {
+  postal:506302,bank:554650,housebank:28439,
+  credit:800000,pledge:787230,salary:64000,
+  sh_0050:100,sh_0050L2:100,sh_vt:296,sh_nvda:55,sh_goog:15,sh_msft:10
+};
+
+let prices = {tw0050:182.41,tw0050L2:3.833,vtUSD:105,nvdaUSD:120,googUSD:165,msftUSD:430,usdTWD:32.5};
+let donutChart=null,growthChart=null,historyChartObj=null;
+let currentScenario='極保守';
+
+// ── SCENARIO DATA (based on 10yr historical CAGR) ─────────────
+// 0050 CAGR=11.77%, 0050L2 CAGR=29.9%
+const SCENARIOS = {
+  '極保守':{r0050:0.0942,r0050L2:0.1794,rvt:0.08,rus:0.07,label:'過去10年CAGR × 0.8折'},
+  '保守':{r0050:0.1177,r0050L2:0.25,rvt:0.10,rus:0.09,label:'過去10年幾何平均CAGR'},
+  '樂觀':{r0050:0.1319,r0050L2:0.299,rvt:0.12,rus:0.12,label:'過去10年算術平均報酬'},
+};
+
+// ── STORAGE ───────────────────────────────────────────────────
+function loadS(){return Object.assign({},DEFAULTS,JSON.parse(localStorage.getItem('assetSettings')||'{}'));}
+function saveS(o){localStorage.setItem('assetSettings',JSON.stringify(Object.assign(loadS(),o)));}
+function loadH(){return JSON.parse(localStorage.getItem('assetHistory')||'[]');}
+function saveH(a){localStorage.setItem('assetHistory',JSON.stringify(a));}
+
+// ── PRICE FETCH ───────────────────────────────────────────────
+async function fetchPrices(){
+  const btn=document.getElementById('syncIcon');
+  btn.innerHTML='<span class="spin"></span>';
+  try{
+    const r=await fetch('https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_0050.tw|tse_00631L.tw&json=1&delay=0');
+    if(r.ok){const d=await r.json();if(d.msgArray){d.msgArray.forEach(s=>{const p=parseFloat(s.z||s.y);if(p>0){if(s.ch&&s.ch.includes('0050.tw')&&!s.ch.includes('631'))prices.tw0050=p;if(s.ch&&s.ch.includes('631'))prices.tw0050L2=p;}});}}
+  }catch(e){}
+  try{
+    const r=await fetch('https://open.er-api.com/v6/latest/USD');
+    if(r.ok){const d=await r.json();if(d.rates&&d.rates.TWD)prices.usdTWD=d.rates.TWD;}
+  }catch(e){}
+  btn.innerHTML='↻';
+  document.getElementById('lastUpdateTime').textContent='最後更新：'+new Date().toLocaleTimeString('zh-TW');
+  renderDashboard();
+  if(document.getElementById('page-growth').classList.contains('active')) renderGrowth();
+}
+
+// ── CALC ──────────────────────────────────────────────────────
+function calc(s){
+  const rate=prices.usdTWD;
+  const tw0050v=s.sh_0050*1000*prices.tw0050;
+  const tw0050L2v=s.sh_0050L2*1000*prices.tw0050L2;
+  const vtV=s.sh_vt*prices.vtUSD*rate;
+  const nvdaV=s.sh_nvda*prices.nvdaUSD*rate;
+  const googV=s.sh_goog*prices.googUSD*rate;
+  const msftV=s.sh_msft*prices.msftUSD*rate;
+  const twS=tw0050v+tw0050L2v;
+  const usS=vtV+nvdaV+googV+msftV;
+  const cash=s.postal+s.bank+s.housebank;
+  const debt=s.credit+s.pledge;
+  const gross=twS+usS+cash;
+  const net=gross-debt;
+  const mi=(s.credit*0.03+s.pledge*0.025)/12;
+  return{tw0050v,tw0050L2v,vtV,nvdaV,googV,msftV,twS,usS,cash,debt,gross,net,mi,rate};
+}
+
+// ── PROJECTION ────────────────────────────────────────────────
+function project(s,a,scenario){
+  const sc=SCENARIOS[scenario];
+  let tw0=a.tw0050v,tw2=a.tw0050L2v,vt=a.vtV,us=a.nvdaV+a.googV+a.msftV,cash=a.cash;
+  const debt=a.debt;
+  const results=[{year:2026,net:a.net,gross:a.gross}];
+  for(let i=1;i<=10;i++){
+    tw0*=(1+sc.r0050);tw2*=(1+sc.r0050L2);vt*=(1+sc.rvt);us*=(1+sc.rus);cash*=1.005;
+    const gross=tw0+tw2+vt+us+cash;
+    const net=gross-debt;
+    results.push({year:2026+i,net:Math.round(net),gross:Math.round(gross)});
+  }
+  return results;
+}
+
+// ── RENDER DASHBOARD ──────────────────────────────────────────
+function renderDashboard(){
+  const s=loadS();const a=calc(s);
+  const history=loadH();const prev=history.length>=2?history[history.length-2]:null;
+  document.getElementById('heroTotal').textContent=fmt(a.net);
+  if(prev){const d=a.net-prev.net,p=(d/prev.net*100).toFixed(1);const el=document.getElementById('heroDelta');el.textContent=(d>=0?'+':'')+fmt(d)+' ('+p+'%)';el.className='hero-delta '+(d>=0?'up':'down');}
+  document.getElementById('sumStocks').textContent=fmtM(a.twS+a.usS);
+  document.getElementById('sumCash').textContent=fmtM(a.cash);
+  document.getElementById('sumDebt').textContent=fmtM(a.debt);
+  document.getElementById('netAsset').textContent=fmt(a.net);
+  document.getElementById('cfSalary').textContent='$'+s.salary.toLocaleString();
+  document.getElementById('cfInterest').textContent='-$'+Math.round(a.mi).toLocaleString();
+  document.getElementById('cfNet').textContent='$'+Math.round(s.salary-a.mi).toLocaleString();
+
+  // Donut
+  const ctx=document.getElementById('donut').getContext('2d');
+  if(donutChart)donutChart.destroy();
+  const total=a.twS+a.usS+a.cash;
+  donutChart=new Chart(ctx,{type:'doughnut',data:{labels:['台股','美股','現金'],datasets:[{data:[a.twS,a.usS,a.cash],backgroundColor:['#4a9eff','#c9a84c','#2ecc71'],borderColor:'#181a1f',borderWidth:3}]},options:{responsive:false,cutout:'68%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+Math.round(c.raw/total*100)+'%'}}}}});
+  const colors=['#4a9eff','#c9a84c','#2ecc71'],names=['台股','美股','現金'],vals=[a.twS,a.usS,a.cash];
+  document.getElementById('legend').innerHTML=names.map((n,i)=>`<div class="leg-item"><div class="leg-dot" style="background:${colors[i]}"></div><span class="leg-name">${n}</span><span class="leg-val">${Math.round(vals[i]/total*100)}%</span></div>`).join('');
+
+  document.getElementById('twStockCard').innerHTML=`
+    <div class="card-row"><div class="row-left"><div class="row-name">0050</div><div class="row-detail">${s.sh_0050}張 × $${prices.tw0050}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.tw0050v))}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">0050正2</div><div class="row-detail">${s.sh_0050L2}張 × $${prices.tw0050L2}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.tw0050L2v))}</div></div></div>`;
+  document.getElementById('usStockCard').innerHTML=`
+    <div class="card-row"><div class="row-left"><div class="row-name">VT</div><div class="row-detail">${s.sh_vt}股 × US$${prices.vtUSD} @ ${prices.usdTWD.toFixed(1)}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.vtV))}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">NVDA</div><div class="row-detail">${s.sh_nvda}股 × US$${prices.nvdaUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.nvdaV))}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">GOOG</div><div class="row-detail">${s.sh_goog}股 × US$${prices.googUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.googV))}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">MSFT</div><div class="row-detail">${s.sh_msft}股 × US$${prices.msftUSD}</div></div><div class="row-right"><div class="row-val">${fmt(Math.round(a.msftV))}</div></div></div>`;
+  document.getElementById('cashCard').innerHTML=`
+    <div class="card-row"><div class="row-left"><div class="row-name">郵局</div><div class="row-detail">緊急備用金</div></div><div class="row-right"><div class="row-val">${fmt(s.postal)}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">銀行</div><div class="row-detail">一般存款</div></div><div class="row-right"><div class="row-val">${fmt(s.bank)}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">房子銀行</div><div class="row-detail">每月累積</div></div><div class="row-right"><div class="row-val">${fmt(s.housebank)}</div></div></div>`;
+  document.getElementById('debtCard').innerHTML=`
+    <div class="card-row" style="padding:0 0 8px"><div class="row-left"><div class="row-name">信貸</div><div class="row-detail">月息 ${fmt(Math.round(s.credit*0.03/12))}（年3%）</div></div><div class="row-right"><div class="row-val neg">${fmt(s.credit)}</div></div></div>
+    <div class="card-row"><div class="row-left"><div class="row-name">股票質押</div><div class="row-detail">月息 ${fmt(Math.round(s.pledge*0.025/12))}（年2.5%）</div></div><div class="row-right"><div class="row-val neg">${fmt(s.pledge)}</div></div></div>`;
+}
+
+// ── RENDER GROWTH ─────────────────────────────────────────────
+function renderGrowth(){
+  const s=loadS();const a=calc(s);
+  const sc=SCENARIOS[currentScenario];
+
+  // Assumptions display
+  document.getElementById('assumptTitle').textContent=currentScenario+'情境假設';
+  document.getElementById('ass0050').textContent=(sc.r0050*100).toFixed(1)+'%';
+  document.getElementById('ass0050L2').textContent=(sc.r0050L2*100).toFixed(1)+'%';
+  document.getElementById('assVT').textContent=(sc.rvt*100).toFixed(1)+'%';
+  document.getElementById('assUS').textContent=(sc.rus*100).toFixed(1)+'%';
+
+  // All 3 scenarios for chart
+  const p1=project(s,a,'極保守');
+  const p2=project(s,a,'保守');
+  const p3=project(s,a,'樂觀');
+  const cur=project(s,a,currentScenario);
+  const final=cur[cur.length-1].net;
+
+  document.getElementById('growth10y').textContent=fmtM(final);
+  const cagr=Math.pow(final/a.net,1/10)-1;
+  document.getElementById('growthCagr').textContent=`年化複合成長 ${(cagr*100).toFixed(1)}%（${sc.label}）`;
+
+  // Chart
+  const labels=p1.map(d=>d.year+'');
+  const ctx2=document.getElementById('growthChart').getContext('2d');
+  if(growthChart)growthChart.destroy();
+  growthChart=new Chart(ctx2,{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'極保守',data:p1.map(d=>Math.round(d.net/10000)),borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.08)',fill:true,borderWidth:2,pointRadius:2,tension:.3},
+      {label:'保守',data:p2.map(d=>Math.round(d.net/10000)),borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.05)',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[5,3]},
+      {label:'樂觀',data:p3.map(d=>Math.round(d.net/10000)),borderColor:'#2ecc71',backgroundColor:'rgba(46,204,113,.05)',fill:false,borderWidth:1.5,pointRadius:2,tension:.3,borderDash:[3,3]}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#666',font:{size:10}},grid:{color:'#1e2028'}},y:{ticks:{color:'#666',font:{size:10},callback:v=>v+'萬'},grid:{color:'#1e2028'}}}}
+  });
+
+  // Table
+  document.getElementById('growthTable').innerHTML=
+    `<div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">${currentScenario}情境逐年預估</div>`+
+    cur.map((d,i)=>i===0?'':`<div class="card-row"><div class="row-left"><div class="row-name">${d.year}年</div><div class="row-detail">${i}年後</div></div><div class="row-right"><div class="row-val" style="color:var(--green)">${fmtM(d.net)}</div><div class="price-tag">總資產 ${fmtM(d.gross)}</div></div></div>`).join('');
+}
+
+// ── RENDER HISTORY ────────────────────────────────────────────
+function renderHistory(){
+  const history=loadH();
+  const listEl=document.getElementById('historyList');
+  if(history.length===0){listEl.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px 0">尚無記錄<br><small>請在「更新」頁面儲存資料</small></div>';return;}
+  const labels=history.map(h=>h.date);
+  const netD=history.map(h=>Math.round(h.net/10000));
+  const grossD=history.map(h=>Math.round(h.gross/10000));
+  const ctx=document.getElementById('historyChart').getContext('2d');
+  if(historyChartObj)historyChartObj.destroy();
+  historyChartObj=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'淨資產',data:netD,borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,.1)',fill:true,borderWidth:2,pointRadius:3,tension:.3},{label:'總資產',data:grossD,borderColor:'#4a9eff',backgroundColor:'rgba(74,158,255,.04)',fill:true,borderWidth:1.5,pointRadius:3,tension:.3,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+'萬'}}},scales:{x:{ticks:{color:'#666',font:{size:10},maxRotation:45},grid:{color:'#1e2028'}},y:{ticks:{color:'#666',font:{size:10},callback:v=>v+'萬'},grid:{color:'#1e2028'}}}}});
+  listEl.innerHTML=[...history].reverse().map(h=>`<div class="card" style="margin-bottom:9px;padding:12px 14px"><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;font-weight:600">${h.date}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">總資產 ${fmtM(h.gross)}</div></div><div style="text-align:right"><div style="font-size:15px;font-weight:700;color:var(--gold2)">${fmtM(h.net)}</div><div style="font-size:10px;color:var(--muted)">淨資產</div></div></div></div>`).join('');
+}
+
+// ── SAVE ──────────────────────────────────────────────────────
+function saveAndCalc(){
+  const g=id=>{const v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;};
+  const cur=loadS();
+  const settings={
+    postal:g('inp_postal')??cur.postal,bank:g('inp_bank')??cur.bank,housebank:g('inp_housebank')??cur.housebank,
+    credit:g('inp_credit')??cur.credit,pledge:g('inp_pledge')??cur.pledge,salary:g('inp_salary')??cur.salary,
+    sh_0050:g('sh_0050')??cur.sh_0050,sh_0050L2:g('sh_0050L2')??cur.sh_0050L2,sh_vt:g('sh_vt')??cur.sh_vt,
+    sh_nvda:g('sh_nvda')??cur.sh_nvda,sh_goog:g('sh_goog')??cur.sh_goog,sh_msft:g('sh_msft')??cur.sh_msft
+  };
+  saveS(settings);
+  const a=calc(settings);
+  const dateStr=new Date().getFullYear()+'/'+(new Date().getMonth()+1).toString().padStart(2,'0');
+  const history=loadH();
+  const idx=history.findIndex(h=>h.date===dateStr);
+  const rec={date:dateStr,net:a.net,gross:a.gross,debt:a.debt,cash:a.cash};
+  if(idx>=0)history[idx]=rec;else history.push(rec);
+  saveH(history);
+  alert('✅ 儲存完成！');
+  showPage('dashboard',document.querySelector('.tab'));
+  renderDashboard();
+}
+
+// ── SCENARIO SELECT ───────────────────────────────────────────
+function selectScenario(name,el){
+  currentScenario=name;
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderGrowth();
+}
+
+// ── PREFILL ───────────────────────────────────────────────────
+function prefill(){
+  const s=loadS();
+  const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.value=v;};
+  set('inp_postal',s.postal);set('inp_bank',s.bank);set('inp_housebank',s.housebank);
+  set('inp_credit',s.credit);set('inp_pledge',s.pledge);set('inp_salary',s.salary);
+  set('sh_0050',s.sh_0050);set('sh_0050L2',s.sh_0050L2);set('sh_vt',s.sh_vt);
+  set('sh_nvda',s.sh_nvda);set('sh_goog',s.sh_goog);set('sh_msft',s.sh_msft);
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function showPage(name,tabEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  tabEl.closest('.tab').classList.add('active');
+  if(name==='history')renderHistory();
+  if(name==='growth')renderGrowth();
+  if(name==='input')prefill();
+}
+
+// ── FORMAT ────────────────────────────────────────────────────
+function fmt(n){return(n<0?'-$':'$')+Math.abs(n).toLocaleString('zh-TW');}
+function fmtM(n){return'$'+(n/10000).toFixed(0)+'萬';}
+
+// ── INIT ──────────────────────────────────────────────────────
+function init(){
+  document.getElementById('headerDate').textContent=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  const history=loadH();
+  if(history.length===0){
+    saveH([
+      {date:'2023/04',net:2857162,gross:3457162,debt:600000,cash:1686004},
+      {date:'2024/01',net:3072273,gross:3472273,debt:400000,cash:1774929},
+      {date:'2024/09',net:5140063,gross:5540063,debt:400000,cash:1183825},
+      {date:'2025/01',net:3273025,gross:3673025,debt:400000,cash:1462822},
+      {date:'2025/10',net:4027901,gross:4427901,debt:400000,cash:2338767},
+      {date:'2026/06',net:3365440,gross:4952670,debt:1587230,cash:1089391},
+    ]);
+  }
+  renderDashboard();
+  fetchPrices();
+}
+init();
+</script>
+</body>
+</html>
